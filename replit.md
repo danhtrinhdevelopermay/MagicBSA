@@ -13,6 +13,12 @@ Focus on practical, working solutions over theoretical explanations.
 
 ## Recent Changes (July 29, 2025)
 
+✓ **FIXED APK BUILD ERROR** - Resolved GitHub Actions APK build failure caused by XML namespace issue:
+  - Fixed ic_launcher_foreground.xml with missing aapt namespace declaration
+  - Replaced problematic vector XML with PNG image format for better compatibility
+  - Removed XML gradient dependencies that caused resource compilation errors
+  - Adaptive icon now uses PNG foreground instead of vector drawable
+  - APK build should now pass GitHub Actions without XML parsing errors
 ✓ **IMPLEMENTED BACKGROUND MUSIC SYSTEM** - Added comprehensive audio system for TwinkBSA app:
   - Added audioplayers plugin (v5.2.1) for background music and sound effects
   - Created AudioService singleton for centralized audio management
