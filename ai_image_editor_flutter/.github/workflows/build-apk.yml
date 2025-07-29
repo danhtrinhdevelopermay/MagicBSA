@@ -122,14 +122,14 @@ jobs:
       run: |
         flutter clean
         flutter pub get
-        # Clear Gradle cache to avoid dependency issues
-        cd android && ./gradlew clean && cd ..
-        # Build with conservative approach for compatibility
+        # Clear Gradle cache and refresh dependencies
+        cd android && ./gradlew clean --refresh-dependencies && cd ..
+        # Build with updated Kotlin version support
         flutter build apk --release --no-shrink --no-obfuscate || {
-          echo "Release build failed, trying with offline mode..."
-          flutter build apk --release --offline --no-shrink || {
-            echo "Offline build failed, trying debug build..."
-            flutter build apk --debug
+          echo "Release build failed, trying with verbose output..."
+          flutter build apk --release --verbose --no-shrink || {
+            echo "Verbose build failed, trying debug build..."
+            flutter build apk --debug --verbose
           }
         }
       working-directory: ./ai_image_editor_flutter

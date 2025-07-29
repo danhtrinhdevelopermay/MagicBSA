@@ -6,7 +6,7 @@
 |-----------|---------|---------|
 | **Gradle** | 7.6.3 | Stable with AGP 7.4.2, avoids Kotlin DSL issues |
 | **Android Gradle Plugin** | 7.4.2 | Compatible with Gradle 7.6.3, stable release |
-| **Kotlin** | 1.7.10 | Compatible with Flutter 3.22.0 and AGP 7.4.2 |
+| **Kotlin** | 1.8.22 | Updated to available version, compatible with Flutter 3.22.0 and AGP 7.4.2 |
 | **Java** | 11 | Required for Gradle 7.6.3, stable LTS version |
 | **Compile SDK** | 33 | Stable API level, good compatibility |
 | **Target SDK** | 33 | Matches compile SDK for consistency |
