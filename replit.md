@@ -48,6 +48,9 @@ Always provide manual Git push commands when making changes to the codebase.
 ✓ Simplified repositories configuration without content filtering
 ✓ Conservative build settings to avoid compile avoidance issues
 ✓ Fixed classpath configuration warnings and Kotlin DSL compatibility
+✓ Updated Kotlin to 1.8.22 to resolve Maven repository availability issues
+✓ Added plugins.gradle.org/m2/ repository for better plugin resolution
+✓ Added explicit kotlin_version and classpath in build.gradle for dependency clarity
 
 ## Recent Changes (July 27, 2025)
 
