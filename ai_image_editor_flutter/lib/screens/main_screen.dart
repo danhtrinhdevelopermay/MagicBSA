@@ -198,11 +198,16 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   Widget _buildMainContent(BuildContext context, ImageEditProvider provider) {
+    // Check if an image is selected but not yet processing
+    if (provider.originalImage != null && provider.state == ProcessingState.idle) {
+      return const EnhancedEditorWidget();
+    }
+    
     switch (provider.state) {
       case ProcessingState.idle:
         return const ImageUploadWidget();
-      case ProcessingState.uploaded:
-        return const EnhancedEditorWidget();
+      case ProcessingState.picking:
+        return const ImageUploadWidget();
       case ProcessingState.processing:
         return const ProcessingWidget();
       case ProcessingState.completed:
@@ -219,7 +224,7 @@ class _MainScreenState extends State<MainScreen> {
               ),
               const SizedBox(height: 16),
               Text(
-                provider.error ?? 'Đã xảy ra lỗi',
+                provider.errorMessage.isNotEmpty ? provider.errorMessage : 'Đã xảy ra lỗi',
                 style: const TextStyle(
                   fontSize: 16,
                   color: Color(0xFF64748b),

@@ -1,0 +1,96 @@
+  error • The named parameter 'originalImage' is required, but there's no corresponding argument • lib/screens/main_screen.dart:203:20 • missing_required_argument
+  error • The named parameter 'operation' is required, but there's no corresponding argument • lib/screens/main_screen.dart:212:22 • missing_required_argument
+  error • The named parameter 'progress' is required, but there's no corresponding argument • lib/screens/main_screen.dart:212:22 • missing_required_argument
+  error • The named parameter 'onStartOver' is required, but there's no corresponding argument • lib/screens/main_screen.dart:214:22 • missing_required_argument
+  error • The named parameter 'processedImage' is required, but there's no corresponding argument • lib/screens/main_screen.dart:214:22 • missing_required_argument
+  error • The class '_EnhancedEditorWidgetState' doesn't have an unnamed constructor • lib/widgets/enhanced_editor_widget_old.dart:57:48 • new_with_undefined_constructor_default
+  error • The name 'SizedBox' isn't a class • lib/widgets/enhanced_editor_widget_old.dart:178:17 • creation_with_non_type
+  error • The name 'SizedBox' isn't a class • lib/widgets/enhanced_editor_widget_old.dart:189:17 • creation_with_non_type
+  error • The name 'SizedBox' isn't a class • lib/widgets/enhanced_editor_widget_old.dart:250:19 • creation_with_non_type
+  error • The name 'SizedBox' isn't a class • lib/widgets/enhanced_editor_widget_old.dart:261:15 • creation_with_non_type
+  error • The name 'SizedBox' isn't a class • lib/widgets/enhanced_editor_widget_old.dart:312:21 • creation_with_non_type
+  error • The name 'SizedBox' isn't a class • lib/widgets/enhanced_editor_widget_old.dart:326:27 • creation_with_non_type
+  error • The type 'InputType?' is not exhaustively matched by the switch cases since it doesn't match 'InputType.scale' • lib/widgets/enhanced_editor_widget_old.dart:360:5 • non_exhaustive_switch_statement
+  error • The name 'SizedBox' isn't a class • lib/widgets/enhanced_editor_widget_old.dart:421:19 • creation_with_non_type
+  error • The name 'SizedBox' isn't a class • lib/widgets/enhanced_editor_widget_old.dart:471:19 • creation_with_non_type
+  error • The named parameter 'mainAxisAlignment' isn't defined • lib/widgets/enhanced_editor_widget_old.dart:533:7 • undefined_named_parameter
+  error • Expected to find ';' • lib/widgets/enhanced_editor_widget_old.dart:550:11 • expected_token
+  error • Variables must be declared using the keywords 'const', 'final', 'var' or a type name • lib/widgets/enhanced_editor_widget_old.dart:550:11 • missing_const_final_var_or_type
+  error • Expected a class member • lib/widgets/enhanced_editor_widget_old.dart:550:19 • expected_class_member
+  error • Expected a class member • lib/widgets/enhanced_editor_widget_old.dart:550:21 • expected_class_member
+  error • Named parameters must be enclosed in curly braces ('{' and '}') • lib/widgets/enhanced_editor_widget_old.dart:552:20 • named_parameter_outside_group
+  error • Using a colon as the separator before a default value is no longer supported • lib/widgets/enhanced_editor_widget_old.dart:552:20 • obsolete_colon_for_default_value
+  error • The default value of an optional parameter must be constant • lib/widgets/enhanced_editor_widget_old.dart:552:22 • non_constant_default_value
+  error • Named parameters must be enclosed in curly braces ('{' and '}') • lib/widgets/enhanced_editor_widget_old.dart:553:25 • named_parameter_outside_group
+  error • Using a colon as the separator before a default value is no longer supported • lib/widgets/enhanced_editor_widget_old.dart:553:25 • obsolete_colon_for_default_value
+  error • Named parameters must be enclosed in curly braces ('{' and '}') • lib/widgets/enhanced_editor_widget_old.dart:554:20 • named_parameter_outside_group
+  error • Using a colon as the separator before a default value is no longer supported • lib/widgets/enhanced_editor_widget_old.dart:554:20 • obsolete_colon_for_default_value
+  error • Methods can't be invoked in constant expressions • lib/widgets/enhanced_editor_widget_old.dart:554:22 • const_eval_method_invocation
+  error • Named parameters must be enclosed in curly braces ('{' and '}') • lib/widgets/enhanced_editor_widget_old.dart:558:24 • named_parameter_outside_group
+  error • Using a colon as the separator before a default value is no longer supported • lib/widgets/enhanced_editor_widget_old.dart:558:24 • obsolete_colon_for_default_value
+  error • The default value of an optional parameter must be constant • lib/widgets/enhanced_editor_widget_old.dart:558:26 • non_constant_default_value
+  error • A function body must be provided • lib/widgets/enhanced_editor_widget_old.dart:559:14 • missing_function_body
+  error • Expected a class member • lib/widgets/enhanced_editor_widget_old.dart:559:14 • expected_class_member
+  error • Getters, setters and methods can't be declared to be 'const' • lib/widgets/enhanced_editor_widget_old.dart:560:13 • const_method
+  error • Named parameters must be enclosed in curly braces ('{' and '}') • lib/widgets/enhanced_editor_widget_old.dart:560:34 • named_parameter_outside_group
+  error • Using a colon as the separator before a default value is no longer supported • lib/widgets/enhanced_editor_widget_old.dart:560:34 • obsolete_colon_for_default_value
+  error • A function body must be provided • lib/widgets/enhanced_editor_widget_old.dart:560:39 • missing_function_body
+  error • Expected a class member • lib/widgets/enhanced_editor_widget_old.dart:560:39 • expected_class_member
+  error • Named parameters must be enclosed in curly braces ('{' and '}') • lib/widgets/enhanced_editor_widget_old.dart:562:23 • named_parameter_outside_group
+  error • Using a colon as the separator before a default value is no longer supported • lib/widgets/enhanced_editor_widget_old.dart:562:23 • obsolete_colon_for_default_value
+  error • The default value of an optional parameter must be constant • lib/widgets/enhanced_editor_widget_old.dart:562:25 • non_constant_default_value
+  error • A function body must be provided • lib/widgets/enhanced_editor_widget_old.dart:575:14 • missing_function_body
+  error • Expected a class member • lib/widgets/enhanced_editor_widget_old.dart:575:14 • expected_class_member
+  error • Expected a class member • lib/widgets/enhanced_editor_widget_old.dart:576:11 • expected_class_member
+  error • Expected a class member • lib/widgets/enhanced_editor_widget_old.dart:576:12 • expected_class_member
+  error • Expected a class member • lib/widgets/enhanced_editor_widget_old.dart:577:9 • expected_class_member
+  error • Expected a class member • lib/widgets/enhanced_editor_widget_old.dart:577:10 • expected_class_member
+  error • Expected a class member • lib/widgets/enhanced_editor_widget_old.dart:579:7 • expected_class_member
+  error • Methods must have an explicit list of parameters • lib/widgets/enhanced_editor_widget_old.dart:579:12 • missing_method_parameters
+  error • The name of a constructor must match the name of the enclosing class • lib/widgets/enhanced_editor_widget_old.dart:579:12 • invalid_constructor_name
+  error • Expected an initializer • lib/widgets/enhanced_editor_widget_old.dart:579:32 • missing_initializer
+  error • '' isn't a field in the enclosing class • lib/widgets/enhanced_editor_widget_old.dart:580:9 • initializer_for_non_existent_field
+  error • A function body must be provided • lib/widgets/enhanced_editor_widget_old.dart:580:9 • missing_function_body
+  error • A value of type 'Column' can't be returned from the constructor '_EnhancedEditorWidgetState.dimensions' because it has a return type of '_EnhancedEditorWidgetState' • lib/widgets/enhanced_editor_widget_old.dart:580:16 • return_of_invalid_type
+  error • Constructors can't return values • lib/widgets/enhanced_editor_widget_old.dart:580:16 • return_in_generative_constructor
+  error • The name 'SizedBox' isn't a class • lib/widgets/enhanced_editor_widget_old.dart:588:19 • creation_with_non_type
+  error • Expected a class member • lib/widgets/enhanced_editor_widget_old.dart:597:7 • expected_class_member
+  error • Methods must have an explicit list of parameters • lib/widgets/enhanced_editor_widget_old.dart:597:12 • missing_method_parameters
+  error • The name of a constructor must match the name of the enclosing class • lib/widgets/enhanced_editor_widget_old.dart:597:12 • invalid_constructor_name
+  error • Expected an initializer • lib/widgets/enhanced_editor_widget_old.dart:597:26 • missing_initializer
+  error • '' isn't a field in the enclosing class • lib/widgets/enhanced_editor_widget_old.dart:598:9 • initializer_for_non_existent_field
+  error • A function body must be provided • lib/widgets/enhanced_editor_widget_old.dart:598:9 • missing_function_body
+  error • A value of type 'Text' can't be returned from the constructor '_EnhancedEditorWidgetState.mask' because it has a return type of '_EnhancedEditorWidgetState' • lib/widgets/enhanced_editor_widget_old.dart:598:16 • return_of_invalid_type
+  error • Constructors can't return values • lib/widgets/enhanced_editor_widget_old.dart:598:16 • return_in_generative_constructor
+  error • Expected a class member • lib/widgets/enhanced_editor_widget_old.dart:600:7 • expected_class_member
+  error • Methods must have an explicit list of parameters • lib/widgets/enhanced_editor_widget_old.dart:600:12 • missing_method_parameters
+  error • The name of a constructor must match the name of the enclosing class • lib/widgets/enhanced_editor_widget_old.dart:600:12 • invalid_constructor_name
+  error • Expected an initializer • lib/widgets/enhanced_editor_widget_old.dart:600:27 • missing_initializer
+  error • '' isn't a field in the enclosing class • lib/widgets/enhanced_editor_widget_old.dart:601:9 • initializer_for_non_existent_field
+  error • A function body must be provided • lib/widgets/enhanced_editor_widget_old.dart:601:9 • missing_function_body
+  error • A value of type 'Column' can't be returned from the constructor '_EnhancedEditorWidgetState.scale' because it has a return type of '_EnhancedEditorWidgetState' • lib/widgets/enhanced_editor_widget_old.dart:601:16 • return_of_invalid_type
+  error • Constructors can't return values • lib/widgets/enhanced_editor_widget_old.dart:601:16 • return_in_generative_constructor
+  error • The name 'SizedBox' isn't a class • lib/widgets/enhanced_editor_widget_old.dart:605:19 • creation_with_non_type
+  error • Expected a class member • lib/widgets/enhanced_editor_widget_old.dart:626:7 • expected_class_member
+  error • Expected a class member • lib/widgets/enhanced_editor_widget_old.dart:626:14 • expected_class_member
+  error • Expected a class member • lib/widgets/enhanced_editor_widget_old.dart:627:9 • expected_class_member
+  error • Getters, setters and methods can't be declared to be 'const' • lib/widgets/enhanced_editor_widget_old.dart:627:16 • const_method
+  error • The name 'SizedBox' is already defined • lib/widgets/enhanced_editor_widget_old.dart:627:22 • duplicate_definition
+  error • Expected a method, getter, setter or operator declaration • lib/widgets/enhanced_editor_widget_old.dart:629:3 • expected_executable
+  error • Undefined name 'context' • lib/widgets/enhanced_editor_widget_old.dart:632:53 • undefined_identifier
+  error • There's no constant named 'objectRemoval' in 'ProcessingOperation' • lib/widgets/enhanced_editor_widget_old.dart:645:32 • undefined_enum_constant
+  error • The method 'removeObjectWithAlternativeAPI' isn't defined for the type 'ImageEditProvider' • lib/widgets/enhanced_editor_widget_old.dart:647:18 • undefined_method
+  error • There's no constant named 'imageUpscaling' in 'ProcessingOperation' • lib/widgets/enhanced_editor_widget_old.dart:649:32 • undefined_enum_constant
+  error • The method 'upscaleImageWithAlternativeAPI' isn't defined for the type 'ImageEditProvider' • lib/widgets/enhanced_editor_widget_old.dart:650:18 • undefined_method
+  error • Undefined name '_upscaleScale' • lib/widgets/enhanced_editor_widget_old.dart:650:56 • undefined_identifier
+  error • Undefined name '_promptController' • lib/widgets/enhanced_editor_widget_old.dart:653:13 • undefined_identifier
+  error • The method 'generateTextToImageWithAlternativeAPI' isn't defined for the type 'ImageEditProvider' • lib/widgets/enhanced_editor_widget_old.dart:654:20 • undefined_method
+  error • Undefined name '_promptController' • lib/widgets/enhanced_editor_widget_old.dart:654:58 • undefined_identifier
+  error • Undefined name '_pageController' • lib/widgets/enhanced_editor_widget_old.dart:664:5 • undefined_identifier
+  error • Undefined name '_promptController' • lib/widgets/enhanced_editor_widget_old.dart:665:5 • undefined_identifier
+  error • Undefined name '_sceneController' • lib/widgets/enhanced_editor_widget_old.dart:666:5 • undefined_identifier
+  error • Invalid context for 'super' invocation • lib/widgets/enhanced_editor_widget_old.dart:667:5 • super_in_invalid_context
+  error • Expected a method, getter, setter or operator declaration • lib/widgets/enhanced_editor_widget_old.dart:669:1 • expected_executable
+  error • The name 'FeatureCategory' is already defined • lib/widgets/enhanced_editor_widget_old.dart:672:7 • duplicate_definition
+  error • The name 'Feature' is already defined • lib/widgets/enhanced_editor_widget_old.dart:686:7 • duplicate_definition
+  error • The name 'InputType' is already defined • lib/widgets/enhanced_editor_widget_old.dart:704:6 • duplicate_definition

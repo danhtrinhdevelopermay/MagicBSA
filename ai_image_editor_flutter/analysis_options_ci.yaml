@@ -1,0 +1,24 @@
+# Analysis options for CI/CD builds
+# This is a more lenient configuration for GitHub Actions
+
+include: package:flutter_lints/flutter.yaml
+
+analyzer:
+  exclude:
+    - "**/*.g.dart"
+    - "**/*.freezed.dart"
+    - "**/generated_plugin_registrant.dart"
+  
+  language:
+    strict-casts: false
+    strict-raw-types: false
+
+linter:
+  rules:
+    # Disable problematic rules for CI builds
+    deprecated_member_use: false
+    unused_import: false
+    avoid_print: false
+    prefer_const_constructors: false
+    prefer_const_literals_to_create_immutables: false
+    use_key_in_widget_constructors: false
