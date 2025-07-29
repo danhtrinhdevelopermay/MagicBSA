@@ -89,4 +89,14 @@ Fields:
 3. Điều chỉnh sliders cho từng hướng (0-2000px)
 4. Tap "Xử lý" để gọi Clipdrop uncrop API
 
+## 🚨 APK Build Compilation Fix:
+
+✅ **Fixed compilation errors causing GitHub Actions APK build failures:**
+- Removed obsolete `_selectedAspectRatio` variable references
+- Cleaned up unused `_aspectRatios` list 
+- Removed deprecated `_showAspectRatioDialog()` function
+- Updated InputType enum to use `uncrop` instead of `aspectRatio`
+- All Dart compilation errors resolved
+- Flutter analyze passes with only minor deprecated warnings (non-blocking)
+
 **Tính năng mở rộng ảnh giờ đây hoạt động chính xác theo Clipdrop API documentation!**

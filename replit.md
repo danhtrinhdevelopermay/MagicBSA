@@ -19,6 +19,7 @@ Focus on practical, working solutions over theoretical explanations.
   - Created new intuitive UI with 4 sliders for directional expansion control
   - Added Reset and "200px all" buttons for user convenience
   - Implemented according to official Clipdrop uncrop API documentation
+  - Fixed compilation errors: removed obsolete _selectedAspectRatio references
   - All LSP diagnostics clean, no compilation errors
 ✓ **FIXED APK BUILD ANDROID SDK CONFLICT** - Resolved GitHub Actions APK build failure due to Android SDK version mismatch:
   - Updated compileSdk from 33 to 34 in android/app/build.gradle

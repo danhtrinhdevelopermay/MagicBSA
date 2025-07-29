@@ -67,7 +67,6 @@ class _EnhancedEditorWidgetState extends State<EnhancedEditorWidget> {
   int _extendUp = 200;
   int _extendDown = 200;
 
-  final List<String> _aspectRatios = ['1:1', '16:9', '9:16', '4:3', '3:4'];
   final List<String> _scenes = [
     'forest',
     'city',
@@ -411,57 +410,7 @@ class _EnhancedEditorWidgetState extends State<EnhancedEditorWidget> {
     );
   }
 
-  void _showAspectRatioDialog(Feature feature, ImageEditProvider provider) {
-    showDialog(
-      context: context,  
-      builder: (context) => AlertDialog(
-        title: Text(feature.title),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const Text('Chọn tỷ lệ khung hình:'),
-            const SizedBox(height: 16),
-            DropdownButtonFormField<String>(
-              value: _selectedAspectRatio,
-              decoration: const InputDecoration(
-                border: OutlineInputBorder(),
-              ),
-              items: _aspectRatios.map((ratio) {
-                return DropdownMenuItem(
-                  value: ratio,
-                  child: Text(ratio),
-                );
-              }).toList(),
-              onChanged: (value) {
-                setState(() {
-                  _selectedAspectRatio = value!;
-                });
-              },
-            ),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Hủy'),
-          ),
-          ElevatedButton(
-            onPressed: () {
-              Navigator.pop(context);
-              provider.processImage(
-                feature.operation,
-                extendLeft: _extendLeft,
-                extendRight: _extendRight,
-                extendUp: _extendUp,
-                extendDown: _extendDown,
-              );
-            },
-            child: const Text('Xử lý'),
-          ),
-        ],
-      ),
-    );
-  }
+
 
   void _showUncropDialog(Feature feature, ImageEditProvider provider) {
     showDialog(
