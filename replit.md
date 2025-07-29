@@ -20,6 +20,8 @@ Always provide manual Git push commands when making changes to the codebase.
 ✓ Added animated loading overlay with ✨ sparkle icon for AI image processing
 ✓ Implemented full-screen blur effect during image processing operations
 ✓ Created LoadingOverlayWidget with rotation and pulse animations for enhanced user experience
+✓ Updated loading overlay design with purple gradient background matching user's mockup
+✓ Simplified loading message to "Đang xử lý..." with larger sparkle icon and cleaner layout
 
 ## Recent Changes (July 27, 2025)
 

@@ -52,7 +52,7 @@ class HomeScreen extends StatelessWidget {
               // Loading overlay
               Positioned.fill(
                 child: LoadingOverlayWidget(
-                  message: _getLoadingMessage(provider.currentOperation),
+                  message: 'Đang xử lý...',
                   isVisible: provider.state == ProcessingState.processing,
                 ),
               ),
@@ -231,28 +231,7 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  String _getLoadingMessage(String operation) {
-    switch (operation) {
-      case 'Xóa nền':
-        return 'Đang xóa nền ảnh';
-      case 'Tạo ảnh từ văn bản':
-        return 'Đang tạo ảnh từ văn bản';
-      case 'Dọn dẹp ảnh':
-        return 'Đang dọn dẹp ảnh';
-      case 'Mở rộng ảnh':
-        return 'Đang mở rộng ảnh';
-      case 'Tái tạo ảnh':
-        return 'Đang tái tạo ảnh';
-      case 'Thay đổi nền':
-        return 'Đang thay đổi nền';
-      case 'Xóa văn bản':
-        return 'Đang xóa văn bản';
-      case 'Chụp sản phẩm':
-        return 'Đang tạo ảnh sản phẩm';
-      default:
-        return 'Đang xử lý ảnh';
-    }
-  }
+
 
   void _showMenu(BuildContext context) {
     showModalBottomSheet(

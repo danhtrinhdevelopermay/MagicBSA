@@ -75,91 +75,61 @@ class _LoadingOverlayWidgetState extends State<LoadingOverlayWidget>
       child: Container(
         width: double.infinity,
         height: double.infinity,
-        color: Colors.black.withOpacity(0.7), // Blur overlay
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              Colors.white.withOpacity(0.95),
+              Colors.purple.withOpacity(0.3),
+              Colors.purple.withOpacity(0.6),
+              Colors.purple.withOpacity(0.3),
+              Colors.white.withOpacity(0.95),
+            ],
+            stops: const [0.0, 0.3, 0.5, 0.7, 1.0],
+          ),
+        ),
         child: Center(
-          child: AnimatedBuilder(
-            animation: _pulseAnimation,
-            builder: (context, child) {
-              return Transform.scale(
-                scale: _pulseAnimation.value,
-                child: Container(
-                  padding: const EdgeInsets.all(32),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(20),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.2),
-                        blurRadius: 20,
-                        offset: const Offset(0, 10),
-                      ),
-                    ],
-                  ),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      // Animated sparkle icon
-                      AnimatedBuilder(
-                        animation: _sparkleAnimation,
-                        builder: (context, child) {
-                          return Transform.rotate(
-                            angle: _sparkleAnimation.value * 6.28, // Full rotation
-                            child: Transform.scale(
-                              scale: 1.0 + (_sparkleAnimation.value * 0.3),
-                              child: const Text(
-                                '✨',
-                                style: TextStyle(
-                                  fontSize: 48,
-                                ),
-                              ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // Animated sparkles icon
+              AnimatedBuilder(
+                animation: _sparkleAnimation,
+                builder: (context, child) {
+                  return AnimatedBuilder(
+                    animation: _pulseAnimation,
+                    builder: (context, child) {
+                      return Transform.scale(
+                        scale: _pulseAnimation.value,
+                        child: Transform.rotate(
+                          angle: _sparkleAnimation.value * 6.28, // Full rotation
+                          child: const Text(
+                            '✨',
+                            style: TextStyle(
+                              fontSize: 64,
                             ),
-                          );
-                        },
-                      ),
-                      
-                      const SizedBox(height: 16),
-                      
-                      // Loading message
-                      Text(
-                        widget.message,
-                        style: const TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w600,
-                          color: Color(0xFF1e293b),
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                      
-                      const SizedBox(height: 16),
-                      
-                      // Loading indicator
-                      const SizedBox(
-                        width: 24,
-                        height: 24,
-                        child: CircularProgressIndicator(
-                          strokeWidth: 3,
-                          valueColor: AlwaysStoppedAnimation<Color>(
-                            Color(0xFF3b82f6),
                           ),
                         ),
-                      ),
-                      
-                      const SizedBox(height: 12),
-                      
-                      // Sub message
-                      const Text(
-                        'AI đang xử lý ảnh của bạn...',
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: Color(0xFF64748b),
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                    ],
-                  ),
+                      );
+                    },
+                  );
+                },
+              ),
+              
+              const SizedBox(height: 24),
+              
+              // Loading message
+              Text(
+                'Đang xử lý...',
+                style: const TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.w600,
+                  color: Color(0xFF1e293b),
                 ),
-              );
-            },
+                textAlign: TextAlign.center,
+              ),
+            ],
           ),
         ),
       ),
