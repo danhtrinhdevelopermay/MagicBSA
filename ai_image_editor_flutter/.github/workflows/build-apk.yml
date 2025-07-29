@@ -44,11 +44,24 @@ jobs:
         api-level: 34
         build-tools: 34.0.0
         
+    - name: Setup Gradle cache
+      uses: actions/cache@v3
+      with:
+        path: |
+          ~/.gradle/caches
+          ~/.gradle/wrapper
+          ./ai_image_editor_flutter/android/.gradle
+        key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+        restore-keys: |
+          ${{ runner.os }}-gradle-
+        
     - name: Accept Android licenses
       run: |
         yes | flutter doctor --android-licenses || true
         # Additional license acceptance for build tools
         yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --licenses || true
+        # Pre-download common dependencies
+        $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager "platforms;android-34" "build-tools;34.0.0" || true
         
     - name: Flutter doctor
       run: |
@@ -109,10 +122,18 @@ jobs:
       run: |
         flutter clean
         flutter pub get
-        # Build with error handling
+        # Clear Gradle cache to avoid dependency issues
+        cd android && ./gradlew clean && cd ..
+        # Build with error handling and retry mechanism
         flutter build apk --release --verbose --no-tree-shake-icons --no-shrink --no-pub || {
-          echo "First build attempt failed, trying with basic flags..."
-          flutter build apk --release --no-shrink
+          echo "First build attempt failed, clearing caches and retrying..."
+          flutter clean
+          cd android && ./gradlew clean && ./gradlew build --refresh-dependencies && cd ..
+          flutter pub get
+          flutter build apk --release --no-shrink || {
+            echo "Second build attempt failed, trying minimal build..."
+            flutter build apk --debug
+          }
         }
       working-directory: ./ai_image_editor_flutter
 

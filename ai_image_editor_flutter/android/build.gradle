@@ -1,7 +1,16 @@
 allprojects {
     repositories {
-        google()
+        google {
+            content {
+                includeGroupByRegex "com\\.android.*"
+                includeGroupByRegex "com\\.google.*"
+                includeGroupByRegex "androidx.*"
+            }
+        }
         mavenCentral()
+        // Fallback repositories for better reliability
+        maven { url "https://jcenter.bintray.com" }
+        maven { url "https://maven.google.com" }
     }
 }
 
