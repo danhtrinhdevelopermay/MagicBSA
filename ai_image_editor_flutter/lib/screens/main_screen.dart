@@ -200,7 +200,9 @@ class _MainScreenState extends State<MainScreen> {
   Widget _buildMainContent(BuildContext context, ImageEditProvider provider) {
     // Check if an image is selected but not yet processing
     if (provider.originalImage != null && provider.state == ProcessingState.idle) {
-      return const EnhancedEditorWidget();
+      return EnhancedEditorWidget(
+        originalImage: provider.originalImage!,
+      );
     }
     
     switch (provider.state) {
@@ -209,9 +211,16 @@ class _MainScreenState extends State<MainScreen> {
       case ProcessingState.picking:
         return const ImageUploadWidget();
       case ProcessingState.processing:
-        return const ProcessingWidget();
+        return ProcessingWidget(
+          operation: provider.currentOperation.isNotEmpty ? provider.currentOperation : 'Đang xử lý...',
+          progress: provider.progress,
+        );
       case ProcessingState.completed:
-        return const ResultWidget();
+        return ResultWidget(
+          originalImage: provider.originalImage,
+          processedImage: provider.processedImage!,
+          onStartOver: () => provider.reset(),
+        );
       case ProcessingState.error:
         return Center(
           child: Column(
