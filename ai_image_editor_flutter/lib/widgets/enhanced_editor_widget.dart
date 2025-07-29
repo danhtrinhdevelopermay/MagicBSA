@@ -8,7 +8,7 @@ import '../services/clipdrop_service.dart';
 enum InputType {
   mask,
   prompt,
-  aspectRatio,
+  uncrop,
   scene,
   scale,
 }
@@ -61,9 +61,11 @@ class _EnhancedEditorWidgetState extends State<EnhancedEditorWidget> {
   final PageController _pageController = PageController();
   int _currentPage = 0;
   final TextEditingController _promptController = TextEditingController();
-  String _selectedAspectRatio = '1:1';
   String _selectedScene = 'forest';
-  double _uncropExtendRatio = 1.5;
+  int _extendLeft = 200;
+  int _extendRight = 200;
+  int _extendUp = 200;
+  int _extendDown = 200;
 
   final List<String> _aspectRatios = ['1:1', '16:9', '9:16', '4:3', '3:4'];
   final List<String> _scenes = [
@@ -118,7 +120,7 @@ class _EnhancedEditorWidgetState extends State<EnhancedEditorWidget> {
           subtitle: 'Tự động mở rộng khung ảnh',
           icon: Icons.crop_free,
           needsInput: true,
-          inputType: InputType.aspectRatio,
+          inputType: InputType.uncrop,
         ),
         Feature(
           operation: ProcessingOperation.reimagine,
@@ -357,8 +359,8 @@ class _EnhancedEditorWidgetState extends State<EnhancedEditorWidget> {
       case InputType.prompt:
         _showPromptDialog(feature, provider);
         break;
-      case InputType.aspectRatio:
-        _showAspectRatioDialog(feature, provider);
+      case InputType.uncrop:
+        _showUncropDialog(feature, provider);
         break;
       case InputType.scene:
         _showSceneDialog(feature, provider);
@@ -448,8 +450,155 @@ class _EnhancedEditorWidgetState extends State<EnhancedEditorWidget> {
               Navigator.pop(context);
               provider.processImage(
                 feature.operation,
-                aspectRatio: _selectedAspectRatio,
-                uncropExtendRatio: _uncropExtendRatio,
+                extendLeft: _extendLeft,
+                extendRight: _extendRight,
+                extendUp: _extendUp,
+                extendDown: _extendDown,
+              );
+            },
+            child: const Text('Xử lý'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showUncropDialog(Feature feature, ImageEditProvider provider) {
+    showDialog(
+      context: context,  
+      builder: (context) => AlertDialog(
+        title: Text(feature.title),
+        content: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Text('Số pixel để mở rộng theo mỗi hướng (tối đa 2000px):'),
+              const SizedBox(height: 16),
+              
+              // Extend Left
+              Row(
+                children: [
+                  const SizedBox(width: 80, child: Text('Trái:')),
+                  Expanded(
+                    child: Slider(
+                      value: _extendLeft.toDouble(),
+                      min: 0,
+                      max: 2000,
+                      divisions: 40,
+                      label: '${_extendLeft}px',
+                      onChanged: (value) {
+                        setState(() {
+                          _extendLeft = value.round();
+                        });
+                      },
+                    ),
+                  ),
+                ],
+              ),
+              
+              // Extend Right
+              Row(
+                children: [
+                  const SizedBox(width: 80, child: Text('Phải:')),
+                  Expanded(
+                    child: Slider(
+                      value: _extendRight.toDouble(),
+                      min: 0,
+                      max: 2000,
+                      divisions: 40,
+                      label: '${_extendRight}px',
+                      onChanged: (value) {
+                        setState(() {
+                          _extendRight = value.round();
+                        });
+                      },
+                    ),
+                  ),
+                ],
+              ),
+              
+              // Extend Up
+              Row(
+                children: [
+                  const SizedBox(width: 80, child: Text('Trên:')),
+                  Expanded(
+                    child: Slider(
+                      value: _extendUp.toDouble(),
+                      min: 0,
+                      max: 2000,
+                      divisions: 40,
+                      label: '${_extendUp}px',
+                      onChanged: (value) {
+                        setState(() {
+                          _extendUp = value.round();
+                        });
+                      },
+                    ),
+                  ),
+                ],
+              ),
+              
+              // Extend Down
+              Row(
+                children: [
+                  const SizedBox(width: 80, child: Text('Dưới:')),
+                  Expanded(
+                    child: Slider(
+                      value: _extendDown.toDouble(),
+                      min: 0,
+                      max: 2000,
+                      divisions: 40,
+                      label: '${_extendDown}px',
+                      onChanged: (value) {
+                        setState(() {
+                          _extendDown = value.round();
+                        });
+                      },
+                    ),
+                  ),
+                ],
+              ),
+              
+              const SizedBox(height: 16),
+              Row(
+                children: [
+                  ElevatedButton(
+                    onPressed: () {
+                      setState(() {
+                        _extendLeft = _extendRight = _extendUp = _extendDown = 0;
+                      });
+                    },
+                    style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+                    child: const Text('Reset', style: TextStyle(color: Colors.white)),
+                  ),
+                  const SizedBox(width: 8),
+                  ElevatedButton(
+                    onPressed: () {
+                      setState(() {
+                        _extendLeft = _extendRight = _extendUp = _extendDown = 200;
+                      });
+                    },
+                    child: const Text('200px tất cả'),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Hủy'),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.pop(context);
+              provider.processImage(
+                feature.operation,
+                extendLeft: _extendLeft,
+                extendRight: _extendRight,
+                extendUp: _extendUp,
+                extendDown: _extendDown,
               );
             },
             child: const Text('Xử lý'),

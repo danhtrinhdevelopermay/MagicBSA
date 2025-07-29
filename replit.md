@@ -13,6 +13,13 @@ Focus on practical, working solutions over theoretical explanations.
 
 ## Recent Changes (July 29, 2025)
 
+✓ **FIXED CLIPDROP UNCROP API** - Resolved uncrop feature not working by implementing correct API parameters:
+  - Updated ClipDropService to use extend_left, extend_right, extend_up, extend_down parameters (0-2000px each)
+  - Replaced incorrect aspectRatio + uncropExtendRatio with proper Clipdrop API fields
+  - Created new intuitive UI with 4 sliders for directional expansion control
+  - Added Reset and "200px all" buttons for user convenience
+  - Implemented according to official Clipdrop uncrop API documentation
+  - All LSP diagnostics clean, no compilation errors
 ✓ **FIXED APK BUILD ANDROID SDK CONFLICT** - Resolved GitHub Actions APK build failure due to Android SDK version mismatch:
   - Updated compileSdk from 33 to 34 in android/app/build.gradle
   - Updated targetSdk from 33 to 34 for dependencies compatibility

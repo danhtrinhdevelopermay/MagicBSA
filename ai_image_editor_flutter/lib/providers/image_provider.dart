@@ -61,9 +61,12 @@ class ImageEditProvider extends ChangeNotifier {
     File? maskFile,
     File? backgroundFile,
     String? prompt,
-    String? aspectRatio,
     String? scene,
-    double? uncropExtendRatio,
+    int? extendLeft,
+    int? extendRight,
+    int? extendUp,
+    int? extendDown,
+    int? seed,
     int? targetWidth,
     int? targetHeight,
   }) async {
@@ -113,9 +116,12 @@ class ImageEditProvider extends ChangeNotifier {
           maskFile: maskFile,
           backgroundFile: backgroundFile,
           prompt: prompt,
-          aspectRatio: aspectRatio,
           scene: scene,
-          uncropExtendRatio: uncropExtendRatio,
+          extendLeft: extendLeft,
+          extendRight: extendRight,
+          extendUp: extendUp,
+          extendDown: extendDown,
+          seed: seed,
           targetWidth: targetWidth,
           targetHeight: targetHeight,
         );
@@ -143,11 +149,20 @@ class ImageEditProvider extends ChangeNotifier {
   }
 
   // New ClipDrop API methods
-  Future<void> uncrop({String? aspectRatio, double? extendRatio}) async {
+  Future<void> uncrop({
+    int? extendLeft,
+    int? extendRight,
+    int? extendUp,
+    int? extendDown,
+    int? seed,
+  }) async {
     await processImage(
       ProcessingOperation.uncrop,
-      aspectRatio: aspectRatio,
-      uncropExtendRatio: extendRatio,
+      extendLeft: extendLeft,
+      extendRight: extendRight,
+      extendUp: extendUp,
+      extendDown: extendDown,
+      seed: seed,
     );
   }
 

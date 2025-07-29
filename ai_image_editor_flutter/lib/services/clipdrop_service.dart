@@ -108,9 +108,12 @@ class ClipDropService {
     File? maskFile,
     File? backgroundFile,
     String? prompt,
-    String? aspectRatio,
     String? scene,
-    double? uncropExtendRatio,
+    int? extendLeft,
+    int? extendRight,
+    int? extendUp,
+    int? extendDown,
+    int? seed,
     int? targetWidth,
     int? targetHeight,
   }) async {
@@ -187,11 +190,20 @@ class ClipDropService {
           break;
         
         case ProcessingOperation.uncrop:
-          if (aspectRatio != null) {
-            formData.fields.add(MapEntry('aspect_ratio', aspectRatio));
+          if (extendLeft != null && extendLeft > 0) {
+            formData.fields.add(MapEntry('extend_left', extendLeft.toString()));
           }
-          if (uncropExtendRatio != null) {
-            formData.fields.add(MapEntry('extend_ratio', uncropExtendRatio.toString()));
+          if (extendRight != null && extendRight > 0) {
+            formData.fields.add(MapEntry('extend_right', extendRight.toString()));
+          }
+          if (extendUp != null && extendUp > 0) {
+            formData.fields.add(MapEntry('extend_up', extendUp.toString()));
+          }
+          if (extendDown != null && extendDown > 0) {
+            formData.fields.add(MapEntry('extend_down', extendDown.toString()));
+          }
+          if (seed != null) {
+            formData.fields.add(MapEntry('seed', seed.toString()));
           }
           break;
           
@@ -254,12 +266,21 @@ class ClipDropService {
   }
 
   // New API methods
-  Future<Uint8List> uncrop(File imageFile, {String? aspectRatio, double? extendRatio}) async {
+  Future<Uint8List> uncrop(File imageFile, {
+    int? extendLeft,
+    int? extendRight, 
+    int? extendUp,
+    int? extendDown,
+    int? seed,
+  }) async {
     return processImage(
       imageFile, 
       ProcessingOperation.uncrop,
-      aspectRatio: aspectRatio,
-      uncropExtendRatio: extendRatio,
+      extendLeft: extendLeft,
+      extendRight: extendRight,
+      extendUp: extendUp,
+      extendDown: extendDown,
+      seed: seed,
     );
   }
 
