@@ -29,6 +29,13 @@ Always provide manual Git push commands when making changes to the codebase.
 ✓ Modified SafeArea configuration to allow content behind system navigation bar
 ✓ Fixed splash screen layout to properly handle edge-to-edge mode with correct SafeArea settings
 ✓ Updated splash screen SystemUI configuration for consistent transparency across app screens
+✓ Fixed splash screen layout centering issue - removed left alignment problem
+✓ Created complete navigation system with 4 main screens: Trang chủ, Lịch sử, Premium, Hồ sơ
+✓ Added HistoryScreen with filtering tabs and sample history items display
+✓ Added PremiumScreen with pricing plans and feature comparison
+✓ Added ProfileScreen with user stats and comprehensive settings menu
+✓ Created MainScreen with PageView navigation and functional bottom navigation
+✓ Updated splash screen to navigate to MainScreen instead of HomeScreen
 
 ## Recent Changes (July 27, 2025)
 
