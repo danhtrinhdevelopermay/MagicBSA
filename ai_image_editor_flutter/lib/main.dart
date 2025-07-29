@@ -7,16 +7,22 @@ import 'providers/image_provider.dart';
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   
-  // Set transparent system bars
+  // Set transparent system bars with proper edge-to-edge
   SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
     statusBarColor: Colors.transparent,
     statusBarIconBrightness: Brightness.dark,
+    statusBarBrightness: Brightness.light,
     systemNavigationBarColor: Colors.transparent,
     systemNavigationBarIconBrightness: Brightness.dark,
+    systemNavigationBarDividerColor: Colors.transparent,
+    systemNavigationBarContrastEnforced: false,
   ));
   
-  // Enable edge-to-edge
-  SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+  // Enable edge-to-edge mode for full immersive experience
+  SystemChrome.setEnabledSystemUIMode(
+    SystemUiMode.edgeToEdge,
+    overlays: [SystemUiOverlay.top, SystemUiOverlay.bottom],
+  );
   
   runApp(const AIImageEditorApp());
 }

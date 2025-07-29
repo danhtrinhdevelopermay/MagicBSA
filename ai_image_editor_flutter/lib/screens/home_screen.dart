@@ -15,24 +15,30 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Set system UI overlay style for home screen
+    // Set system UI overlay style for home screen - ensure transparency
     SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
       statusBarColor: Colors.transparent,
       statusBarIconBrightness: Brightness.dark,
+      statusBarBrightness: Brightness.light,
       systemNavigationBarColor: Colors.transparent,
       systemNavigationBarIconBrightness: Brightness.dark,
+      systemNavigationBarDividerColor: Colors.transparent,
+      systemNavigationBarContrastEnforced: false,
     ));
     
     return Scaffold(
       backgroundColor: const Color(0xFFF8FAFC),
       extendBodyBehindAppBar: true,
       extendBody: true,
+      resizeToAvoidBottomInset: false,
       body: Consumer<ImageEditProvider>(
         builder: (context, provider, child) {
           return Stack(
             children: [
               // Main app content
               SafeArea(
+                top: true,
+                bottom: false, // Don't add bottom safe area to allow full immersion
                 child: Column(
                   children: [
                     // Header
@@ -43,8 +49,10 @@ class HomeScreen extends StatelessWidget {
                       child: _buildMainContent(context, provider),
                     ),
                     
-                    // Bottom Navigation
+                    // Bottom Navigation with manual padding for system navigation
                     const BottomNavigationWidget(),
+                    // Add bottom padding for system navigation bar
+                    SizedBox(height: MediaQuery.of(context).padding.bottom),
                   ],
                 ),
               ),
