@@ -35,7 +35,7 @@ class AIImageEditorApp extends StatelessWidget {
     return ChangeNotifierProvider(
       create: (context) => ImageEditProvider(),
       child: MaterialApp(
-        title: 'Photo Magic',
+        title: 'TwinkBSA',
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
           colorScheme: ColorScheme.fromSeed(

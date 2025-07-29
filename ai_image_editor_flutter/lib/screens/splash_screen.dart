@@ -235,7 +235,7 @@ class _SplashScreenState extends State<SplashScreen>
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
                                   const Text(
-                                    'Photo Magic',
+                                    'TwinkBSA',
                                     textAlign: TextAlign.center,
                                     style: TextStyle(
                                       fontSize: 32,

@@ -171,7 +171,7 @@ class _MainScreenState extends State<MainScreen> {
           ),
           const SizedBox(width: 12),
           const Text(
-            'Photo Magic',
+            'TwinkBSA',
             style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.w600,
