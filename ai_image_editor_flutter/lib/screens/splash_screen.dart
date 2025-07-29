@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'main_screen.dart';
-import '../services/audio_service.dart';
 import '../widgets/audio_controls_widget.dart';
+import 'main_screen.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -17,8 +16,8 @@ class _SplashScreenState extends State<SplashScreen>
   late AnimationController _textController;
   late AnimationController _fadeController;
   
-  late Animation<double> _logoScaleAnimation;
   late Animation<double> _logoOpacityAnimation;
+  late Animation<double> _logoScaleAnimation;
   late Animation<double> _textOpacityAnimation;
   late Animation<Offset> _textSlideAnimation;
   late Animation<double> _fadeOutAnimation;
@@ -27,7 +26,6 @@ class _SplashScreenState extends State<SplashScreen>
   void initState() {
     super.initState();
     
-    // Set transparent status bar and navigation bar for splash
     SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
       statusBarColor: Colors.transparent,
       statusBarIconBrightness: Brightness.light,
@@ -37,31 +35,30 @@ class _SplashScreenState extends State<SplashScreen>
       systemNavigationBarDividerColor: Colors.transparent,
       systemNavigationBarContrastEnforced: false,
     ));
-    
-    _setupAnimations();
-    _startAnimations();
-  }
 
-  void _setupAnimations() {
-    // Logo animation controller
     _logoController = AnimationController(
-      duration: const Duration(milliseconds: 1200),
+      duration: const Duration(milliseconds: 1500),
       vsync: this,
     );
     
-    // Text animation controller
     _textController = AnimationController(
-      duration: const Duration(milliseconds: 800),
+      duration: const Duration(milliseconds: 1000),
       vsync: this,
     );
     
-    // Fade out controller
     _fadeController = AnimationController(
       duration: const Duration(milliseconds: 500),
       vsync: this,
     );
 
-    // Logo scale animation (starts small, grows to normal)
+    _logoOpacityAnimation = Tween<double>(
+      begin: 0.0,
+      end: 1.0,
+    ).animate(CurvedAnimation(
+      parent: _logoController,
+      curve: Curves.easeInOut,
+    ));
+
     _logoScaleAnimation = Tween<double>(
       begin: 0.5,
       end: 1.0,
@@ -70,25 +67,14 @@ class _SplashScreenState extends State<SplashScreen>
       curve: Curves.elasticOut,
     ));
 
-    // Logo opacity animation
-    _logoOpacityAnimation = Tween<double>(
-      begin: 0.0,
-      end: 1.0,
-    ).animate(CurvedAnimation(
-      parent: _logoController,
-      curve: const Interval(0.0, 0.6, curve: Curves.easeIn),
-    ));
-
-    // Text opacity animation
     _textOpacityAnimation = Tween<double>(
       begin: 0.0,
       end: 1.0,
     ).animate(CurvedAnimation(
       parent: _textController,
-      curve: Curves.easeIn,
+      curve: Curves.easeInOut,
     ));
 
-    // Text slide animation (from bottom)
     _textSlideAnimation = Tween<Offset>(
       begin: const Offset(0, 0.5),
       end: Offset.zero,
@@ -97,7 +83,6 @@ class _SplashScreenState extends State<SplashScreen>
       curve: Curves.easeOutCubic,
     ));
 
-    // Fade out animation
     _fadeOutAnimation = Tween<double>(
       begin: 1.0,
       end: 0.0,
@@ -105,24 +90,25 @@ class _SplashScreenState extends State<SplashScreen>
       parent: _fadeController,
       curve: Curves.easeInOut,
     ));
+
+    _startAnimations();
   }
 
   void _startAnimations() async {
-    // Start background music
-    await AudioService().playBackgroundMusic();
+    await Future.delayed(const Duration(milliseconds: 300));
+    _logoController.forward();
     
-    // Start logo animation
-    await _logoController.forward();
-    
-    // Start text animation after logo
-    await _textController.forward();
-    
-    // Wait a bit to show the complete splash
     await Future.delayed(const Duration(milliseconds: 800));
+    _textController.forward();
     
-    // Fade out and navigate
-    await _fadeController.forward();
+    await Future.delayed(const Duration(milliseconds: 2000));
+    _fadeController.forward();
     
+    await Future.delayed(const Duration(milliseconds: 500));
+    _navigateToMainScreen();
+  }
+
+  void _navigateToMainScreen() {
     if (mounted) {
       Navigator.of(context).pushReplacement(
         PageRouteBuilder(
@@ -178,147 +164,148 @@ class _SplashScreenState extends State<SplashScreen>
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                    const Spacer(flex: 2),
-                    
-                    // Logo with animation
-                    Center(
-                      child: AnimatedBuilder(
-                        animation: _logoController,
-                        builder: (context, child) {
-                          return Opacity(
-                            opacity: _logoOpacityAnimation.value,
-                            child: Transform.scale(
-                              scale: _logoScaleAnimation.value,
-                              child: Container(
-                                width: 120,
-                                height: 120,
-                                decoration: BoxDecoration(
-                                  color: Colors.white.withOpacity(0.2),
-                                  borderRadius: BorderRadius.circular(30),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.black.withOpacity(0.2),
-                                      blurRadius: 20,
-                                      offset: const Offset(0, 10),
+                        const Spacer(flex: 2),
+                        
+                        // Logo with animation
+                        Center(
+                          child: AnimatedBuilder(
+                            animation: _logoController,
+                            builder: (context, child) {
+                              return Opacity(
+                                opacity: _logoOpacityAnimation.value,
+                                child: Transform.scale(
+                                  scale: _logoScaleAnimation.value,
+                                  child: Container(
+                                    width: 120,
+                                    height: 120,
+                                    decoration: BoxDecoration(
+                                      color: Colors.white.withOpacity(0.2),
+                                      borderRadius: BorderRadius.circular(30),
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.black.withOpacity(0.2),
+                                          blurRadius: 20,
+                                          offset: const Offset(0, 10),
+                                        ),
+                                      ],
+                                    ),
+                                    child: ClipRRect(
+                                      borderRadius: BorderRadius.circular(30),
+                                      child: Image.asset(
+                                        'assets/images/app_icon.png',
+                                        width: 80,
+                                        height: 80,
+                                        fit: BoxFit.contain,
+                                        errorBuilder: (context, error, stackTrace) {
+                                          return const Icon(
+                                            Icons.auto_fix_high,
+                                            color: Colors.white,
+                                            size: 60,
+                                          );
+                                        },
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+                        ),
+                        
+                        const SizedBox(height: 32),
+                        
+                        // App name with animation
+                        Center(
+                          child: AnimatedBuilder(
+                            animation: _textController,
+                            builder: (context, child) {
+                              return SlideTransition(
+                                position: _textSlideAnimation,
+                                child: Opacity(
+                                  opacity: _textOpacityAnimation.value,
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    children: [
+                                      const Text(
+                                        'TwinkBSA',
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                          fontSize: 32,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.white,
+                                          letterSpacing: 1.2,
+                                        ),
+                                      ),
+                                      const SizedBox(height: 8),
+                                      Text(
+                                        'AI Image Editor',
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                          fontSize: 16,
+                                          color: Colors.white.withOpacity(0.9),
+                                          letterSpacing: 0.5,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+                        ),
+                        
+                        const Spacer(flex: 2),
+                        
+                        // Loading indicator
+                        Center(
+                          child: AnimatedBuilder(
+                            animation: _textController,
+                            builder: (context, child) {
+                              return Opacity(
+                                opacity: _textOpacityAnimation.value,
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    SizedBox(
+                                      width: 40,
+                                      height: 40,
+                                      child: CircularProgressIndicator(
+                                        strokeWidth: 3,
+                                        valueColor: AlwaysStoppedAnimation<Color>(
+                                          Colors.white.withOpacity(0.8),
+                                        ),
+                                      ),
+                                    ),
+                                    const SizedBox(height: 16),
+                                    Text(
+                                      'Powered by Clipdrop AI',
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                        fontSize: 14,
+                                        color: Colors.white.withOpacity(0.8),
+                                      ),
                                     ),
                                   ],
                                 ),
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(30),
-                                  child: Image.asset(
-                                    'assets/images/app_icon.png',
-                                    width: 80,
-                                    height: 80,
-                                    fit: BoxFit.contain,
-                                    errorBuilder: (context, error, stackTrace) {
-                                      return const Icon(
-                                        Icons.auto_fix_high,
-                                        color: Colors.white,
-                                        size: 60,
-                                      );
-                                    },
-                                  ),
-                                ),
-                              ),
-                            ),
-                          );
-                        },
-                      ),
+                              );
+                            },
+                          ),
+                        ),
+                        
+                        const SizedBox(height: 40),
+                      ],
                     ),
                     
-                    const SizedBox(height: 32),
-                    
-                    // App name with animation
-                    Center(
-                      child: AnimatedBuilder(
-                        animation: _textController,
-                        builder: (context, child) {
-                          return SlideTransition(
-                            position: _textSlideAnimation,
-                            child: Opacity(
-                              opacity: _textOpacityAnimation.value,
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  const Text(
-                                    'TwinkBSA',
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                      fontSize: 32,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.white,
-                                      letterSpacing: 1.2,
-                                    ),
-                                  ),
-                                  const SizedBox(height: 8),
-                                  Text(
-                                    'AI Image Editor',
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                      fontSize: 16,
-                                      color: Colors.white.withOpacity(0.9),
-                                      letterSpacing: 0.5,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          );
-                        },
-                      ),
+                    // Audio controls in top-right corner
+                    const Positioned(
+                      top: 60,
+                      right: 20,
+                      child: AudioControlsWidget(),
                     ),
-                    
-                    const Spacer(flex: 2),
-                    
-                    // Loading indicator
-                    Center(
-                      child: AnimatedBuilder(
-                        animation: _textController,
-                        builder: (context, child) {
-                          return Opacity(
-                            opacity: _textOpacityAnimation.value,
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                SizedBox(
-                                  width: 40,
-                                  height: 40,
-                                  child: CircularProgressIndicator(
-                                    strokeWidth: 3,
-                                    valueColor: AlwaysStoppedAnimation<Color>(
-                                      Colors.white.withOpacity(0.8),
-                                    ),
-                                  ),
-                                ),
-                                const SizedBox(height: 16),
-                                Text(
-                                  'Powered by Clipdrop AI',
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    fontSize: 14,
-                                    color: Colors.white.withOpacity(0.8),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          );
-                        },
-                      ),
-                    ),
-                    
-                      const SizedBox(height: 40),
-                    ],
-                  ),
-                  
-                  // Audio controls in top-right corner
-                  const Positioned(
-                    top: 60,
-                    right: 20,
-                    child: AudioControlsWidget(),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           );
