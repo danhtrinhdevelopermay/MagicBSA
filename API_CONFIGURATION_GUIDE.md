@@ -1,4 +1,4 @@
-# Hướng dẫn cấu hình API Clipdrop
+# Hướng dẫn cấu hình API Clipdroph
 
 ## Tổng quan
 Ứng dụng Photo Magic sử dụng Clipdrop API để thực hiện các tính năng chỉnh sửa ảnh bằng AI. Để sử dụng app, bạn cần có API key từ Clipdrop.
