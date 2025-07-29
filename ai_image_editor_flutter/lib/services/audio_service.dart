@@ -29,7 +29,7 @@ class AudioService {
     
     try {
       // Placeholder for background music - user can replace with their own audio file
-      // await _audioPlayer.play(AssetSource('audio/background_music.mp3'));
+       await _audioPlayer.play(AssetSource('audio/background_music.mp3'));
       
       // For now, we'll create a simple notification sound
       _isPlaying = true;
