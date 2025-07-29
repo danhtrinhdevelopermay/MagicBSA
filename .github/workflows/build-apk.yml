@@ -1,0 +1,139 @@
+name: Build Android APK
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:  # Cho phép chạy thủ công
+
+permissions:
+  contents: write
+  actions: read
+  pull-requests: write
+  issues: write
+
+jobs:
+  build:
+    name: Build APK
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+    
+    - name: Setup Java JDK
+      uses: actions/setup-java@v4
+      with:
+        distribution: 'zulu'
+        java-version: '17'
+    
+    - name: Setup Flutter
+      uses: subosito/flutter-action@v2
+      with:
+        flutter-version: '3.22.0'
+        channel: 'stable'
+        cache: true
+        
+    - name: Flutter doctor
+      run: flutter doctor -v
+    
+    - name: Install dependencies
+      run: |
+        cd ai_image_editor_flutter
+        flutter pub get
+    
+    - name: Clean and prepare project
+      run: |
+        cd ai_image_editor_flutter
+        flutter clean
+        flutter pub get
+        
+    - name: Check Gradle setup
+      run: |
+        cd ai_image_editor_flutter/android
+        ls -la
+        ls -la gradle/wrapper/
+        # Create gradlew if it doesn't exist
+        if [ ! -f gradlew ]; then
+          echo "Creating gradlew file..."
+          echo '#!/bin/sh' > gradlew
+          echo 'DEFAULT_JVM_OPTS="-Xmx64m -Xms64m"' >> gradlew
+          echo 'APP_HOME=$( cd "${APP_HOME:-./}" && pwd -P ) || exit' >> gradlew
+          echo 'CLASSPATH=$APP_HOME/gradle/wrapper/gradle-wrapper.jar' >> gradlew
+          echo 'if [ -n "$JAVA_HOME" ] ; then' >> gradlew
+          echo '    JAVACMD=$JAVA_HOME/bin/java' >> gradlew
+          echo 'else' >> gradlew
+          echo '    JAVACMD=java' >> gradlew
+          echo 'fi' >> gradlew
+          echo 'exec "$JAVACMD" $DEFAULT_JVM_OPTS -classpath "$CLASSPATH" org.gradle.wrapper.GradleWrapperMain "$@"' >> gradlew
+        fi
+        chmod +x gradlew
+        # Download gradle-wrapper.jar if missing
+        if [ ! -f gradle/wrapper/gradle-wrapper.jar ]; then
+          echo "Downloading gradle-wrapper.jar..."
+          curl -L -o gradle/wrapper/gradle-wrapper.jar https://github.com/gradle/gradle/raw/v8.4.0/gradle/wrapper/gradle-wrapper.jar
+        fi
+        echo "Gradle setup complete"
+    
+    - name: Build Release APK
+      run: |
+        cd ai_image_editor_flutter
+        flutter clean
+        flutter pub get
+        flutter build apk --release --verbose --no-tree-shake-icons
+    
+    - name: Build Split APKs (optional)
+      run: |
+        cd ai_image_editor_flutter
+        flutter build apk --release --split-per-abi --verbose --no-tree-shake-icons || echo "Split APK build failed, continuing with universal APK"
+    
+    - name: Check APK exists
+      run: |
+        ls -la ai_image_editor_flutter/build/app/outputs/flutter-apk/
+        
+    - name: Upload Release APK
+      uses: actions/upload-artifact@v4
+      with:
+        name: release-apk
+        path: ai_image_editor_flutter/build/app/outputs/flutter-apk/app-release.apk
+        if-no-files-found: warn
+    
+    - name: Upload Split APKs
+      uses: actions/upload-artifact@v4
+      with:
+        name: split-apks
+        path: |
+          ai_image_editor_flutter/build/app/outputs/flutter-apk/app-arm64-v8a-release.apk
+          ai_image_editor_flutter/build/app/outputs/flutter-apk/app-armeabi-v7a-release.apk
+          ai_image_editor_flutter/build/app/outputs/flutter-apk/app-x86_64-release.apk
+      continue-on-error: true
+    
+    - name: Create Release
+      if: github.ref == 'refs/heads/main'
+      uses: softprops/action-gh-release@v2
+      with:
+        tag_name: v1.0.${{ github.run_number }}
+        name: Photo Magic v1.0.${{ github.run_number }}
+        body: |
+          Photo Magic - AI Image Editor APK
+          
+          New features:
+          - Background removal
+          - Object cleanup  
+          - Text removal
+          - Image uncrop
+          - Image upscaling
+          - Reimagine
+          - Product photography
+          - Background replacement
+          - Text-to-image
+          
+          Improvements:
+          - API failover system
+          - Vietnamese interface
+          - Android 5.0+ support
+          - Real-time processing
+        files: ai_image_editor_flutter/build/app/outputs/flutter-apk/app-release.apk
+        draft: false
+        prerelease: false
+      env:
+        GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
