@@ -22,6 +22,8 @@ Always provide manual Git push commands when making changes to the codebase.
 ✓ Created LoadingOverlayWidget with rotation and pulse animations for enhanced user experience
 ✓ Updated loading overlay design with purple gradient background matching user's mockup
 ✓ Simplified loading message to "Đang xử lý..." with larger sparkle icon and cleaner layout
+✓ Replaced gradient background with authentic BackdropFilter blur effect for proper glass-morphism appearance
+✓ Implemented ImageFilter.blur with semi-transparent overlay for modern loading UI experience
 
 ## Recent Changes (July 27, 2025)
 
