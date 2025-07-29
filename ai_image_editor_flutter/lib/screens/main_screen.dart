@@ -118,7 +118,7 @@ class _MainScreenState extends State<MainScreen> {
               ),
               
               // Bottom padding for navigation
-              const SizedBox(height: 100),
+              const SizedBox(height: 90),
             ],
           ),
         );
@@ -257,42 +257,56 @@ class _MainScreenState extends State<MainScreen> {
 
   Widget _buildBottomNavigation() {
     return Container(
-      height: 80 + MediaQuery.of(context).padding.bottom,
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         color: Colors.white,
-        border: Border(
+        border: const Border(
           top: BorderSide(color: Color(0xFFe2e8f0), width: 1),
         ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.1),
+            blurRadius: 10,
+            offset: const Offset(0, -2),
+          ),
+        ],
       ),
       child: SafeArea(
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            _buildNavItem(
-              icon: Icons.home,
-              label: 'Trang chủ',
-              isActive: _currentIndex == 0,
-              onTap: () => _onTabTapped(0),
-            ),
-            _buildNavItem(
-              icon: Icons.history,
-              label: 'Lịch sử',
-              isActive: _currentIndex == 1,
-              onTap: () => _onTabTapped(1),
-            ),
-            _buildNavItem(
-              icon: Icons.star,
-              label: 'Premium',
-              isActive: _currentIndex == 2,
-              onTap: () => _onTabTapped(2),
-            ),
-            _buildNavItem(
-              icon: Icons.person,
-              label: 'Hồ sơ',
-              isActive: _currentIndex == 3,
-              onTap: () => _onTabTapped(3),
-            ),
-          ],
+        child: Container(
+          height: 70,
+          padding: const EdgeInsets.only(top: 8, bottom: 8),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              _buildNavItem(
+                icon: Icons.home_outlined,
+                activeIcon: Icons.home,
+                label: 'Trang chủ',
+                isActive: _currentIndex == 0,
+                onTap: () => _onTabTapped(0),
+              ),
+              _buildNavItem(
+                icon: Icons.history_outlined,
+                activeIcon: Icons.history,
+                label: 'Lịch sử',
+                isActive: _currentIndex == 1,
+                onTap: () => _onTabTapped(1),
+              ),
+              _buildNavItem(
+                icon: Icons.star_border,
+                activeIcon: Icons.star,
+                label: 'Premium',
+                isActive: _currentIndex == 2,
+                onTap: () => _onTabTapped(2),
+              ),
+              _buildNavItem(
+                icon: Icons.person_outline,
+                activeIcon: Icons.person,
+                label: 'Hồ sơ',
+                isActive: _currentIndex == 3,
+                onTap: () => _onTabTapped(3),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -300,31 +314,52 @@ class _MainScreenState extends State<MainScreen> {
 
   Widget _buildNavItem({
     required IconData icon,
+    required IconData activeIcon,
     required String label,
     required bool isActive,
     required VoidCallback onTap,
   }) {
     return GestureDetector(
       onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 16),
+        decoration: BoxDecoration(
+          color: isActive ? const Color(0xFF6366f1).withOpacity(0.1) : Colors.transparent,
+          borderRadius: BorderRadius.circular(20),
+        ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(
-              icon,
-              color: isActive ? const Color(0xFF6366f1) : const Color(0xFF94a3b8),
-              size: 20,
-            ),
-            const SizedBox(height: 4),
-            Text(
-              label,
-              style: TextStyle(
-                fontSize: 11,
-                fontWeight: isActive ? FontWeight.w600 : FontWeight.normal,
+            AnimatedSwitcher(
+              duration: const Duration(milliseconds: 200),
+              child: Icon(
+                isActive ? activeIcon : icon,
+                key: ValueKey(isActive),
                 color: isActive ? const Color(0xFF6366f1) : const Color(0xFF94a3b8),
+                size: 24,
               ),
             ),
+            const SizedBox(height: 4),
+            AnimatedDefaultTextStyle(
+              duration: const Duration(milliseconds: 200),
+              style: TextStyle(
+                fontSize: 12,
+                fontWeight: isActive ? FontWeight.w600 : FontWeight.w500,
+                color: isActive ? const Color(0xFF6366f1) : const Color(0xFF64748b),
+              ),
+              child: Text(label),
+            ),
+            if (isActive)
+              Container(
+                margin: const EdgeInsets.only(top: 2),
+                height: 2,
+                width: 20,
+                decoration: BoxDecoration(
+                  color: const Color(0xFF6366f1),
+                  borderRadius: BorderRadius.circular(1),
+                ),
+              ),
           ],
         ),
       ),
