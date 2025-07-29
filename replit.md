@@ -7,6 +7,7 @@ This project includes both a web application and a Flutter mobile app that provi
 ## User Preferences
 
 Preferred communication style: Simple, everyday language.
+Always provide manual Git push commands when making changes to the codebase.
 
 ## Recent Changes (July 29, 2025)
 
