@@ -25,12 +25,15 @@ class _SplashScreenState extends State<SplashScreen>
   void initState() {
     super.initState();
     
-    // Set transparent status bar and navigation bar
+    // Set transparent status bar and navigation bar for splash
     SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
       statusBarColor: Colors.transparent,
       statusBarIconBrightness: Brightness.light,
+      statusBarBrightness: Brightness.dark,
       systemNavigationBarColor: Colors.transparent,
       systemNavigationBarIconBrightness: Brightness.light,
+      systemNavigationBarDividerColor: Colors.transparent,
+      systemNavigationBarContrastEnforced: false,
     ));
     
     _setupAnimations();
@@ -142,6 +145,8 @@ class _SplashScreenState extends State<SplashScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      extendBodyBehindAppBar: true,
+      extendBody: true,
       body: AnimatedBuilder(
         animation: _fadeOutAnimation,
         builder: (context, child) {
@@ -160,6 +165,8 @@ class _SplashScreenState extends State<SplashScreen>
                 ),
               ),
               child: SafeArea(
+                top: true,
+                bottom: true,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [

@@ -27,6 +27,8 @@ Always provide manual Git push commands when making changes to the codebase.
 ✓ Enhanced system UI transparency settings for full edge-to-edge immersive experience
 ✓ Updated SystemUIOverlayStyle with proper contrast enforcement and divider transparency
 ✓ Modified SafeArea configuration to allow content behind system navigation bar
+✓ Fixed splash screen layout to properly handle edge-to-edge mode with correct SafeArea settings
+✓ Updated splash screen SystemUI configuration for consistent transparency across app screens
 
 ## Recent Changes (July 27, 2025)
 
