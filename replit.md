@@ -13,6 +13,13 @@ Focus on practical, working solutions over theoretical explanations.
 
 ## Recent Changes (July 29, 2025)
 
+✓ **FIXED LOADING OVERLAY FULL-SCREEN COVERAGE** - Resolved loading backdrop blur not covering entire screen:
+  - Moved LoadingOverlayWidget from _buildHomeScreen() Stack to MainScreen main Stack 
+  - Loading overlay now covers full screen including bottom navigation bar
+  - Increased blur effect from sigmaX/Y: 10.0 to 15.0 for better visual effect
+  - Enhanced overlay opacity from 0.3 to 0.6 for better content blocking
+  - Added Material wrapper for proper rendering and transparency
+  - Loading overlay now properly applies backdrop blur to entire application screen
 ✓ **FIXED CLIPDROP UNCROP API** - Resolved uncrop feature not working by implementing correct API parameters:
   - Updated ClipDropService to use extend_left, extend_right, extend_up, extend_down parameters (0-2000px each)
   - Replaced incorrect aspectRatio + uncropExtendRatio with proper Clipdrop API fields

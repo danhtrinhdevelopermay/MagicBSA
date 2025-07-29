@@ -53,74 +53,74 @@ class _MainScreenState extends State<MainScreen> {
       systemNavigationBarContrastEnforced: false,
     ));
     
-    return Scaffold(
-      backgroundColor: const Color(0xFFF8FAFC),
-      extendBodyBehindAppBar: true,
-      extendBody: true,
-      resizeToAvoidBottomInset: false,
-      body: Stack(
-        children: [
-          // Main content with PageView
-          PageView(
-            controller: _pageController,
-            onPageChanged: (index) {
-              setState(() {
-                _currentIndex = index;
-              });
-            },
+    return Consumer<ImageEditProvider>(
+      builder: (context, provider, child) {
+        return Scaffold(
+          backgroundColor: const Color(0xFFF8FAFC),
+          extendBodyBehindAppBar: true,
+          extendBody: true,
+          resizeToAvoidBottomInset: false,
+          body: Stack(
             children: [
-              _buildHomeScreen(),
-              const HistoryScreen(),
-              const PremiumScreen(),
-              const ProfileScreen(),
+              // Main content with PageView
+              PageView(
+                controller: _pageController,
+                onPageChanged: (index) {
+                  setState(() {
+                    _currentIndex = index;
+                  });
+                },
+                children: [
+                  _buildHomeScreen(),
+                  const HistoryScreen(),
+                  const PremiumScreen(),
+                  const ProfileScreen(),
+                ],
+              ),
+              
+              // Bottom Navigation
+              Positioned(
+                bottom: 0,
+                left: 0,
+                right: 0,
+                child: _buildBottomNavigation(),
+              ),
+              
+              // Full-screen loading overlay
+              if (provider.state == ProcessingState.processing)
+                Positioned.fill(
+                  child: LoadingOverlayWidget(
+                    message: 'Đang xử lý...',
+                    isVisible: provider.state == ProcessingState.processing,
+                  ),
+                ),
             ],
           ),
-          
-          // Bottom Navigation
-          Positioned(
-            bottom: 0,
-            left: 0,
-            right: 0,
-            child: _buildBottomNavigation(),
-          ),
-        ],
-      ),
+        );
+      },
     );
   }
 
   Widget _buildHomeScreen() {
     return Consumer<ImageEditProvider>(
       builder: (context, provider, child) {
-        return Stack(
-          children: [
-            // Main home content
-            SafeArea(
-              top: true,
-              bottom: false,
-              child: Column(
-                children: [
-                  // Header
-                  _buildHeader(context),
-                  
-                  // Main content
-                  Expanded(
-                    child: _buildMainContent(context, provider),
-                  ),
-                  
-                  // Bottom padding for navigation
-                  const SizedBox(height: 100),
-                ],
+        return SafeArea(
+          top: true,
+          bottom: false,
+          child: Column(
+            children: [
+              // Header
+              _buildHeader(context),
+              
+              // Main content
+              Expanded(
+                child: _buildMainContent(context, provider),
               ),
-            ),
-            
-            // Loading overlay
-            Positioned.fill(
-              child: LoadingOverlayWidget(
-                message: 'Đang xử lý...',
-                isVisible: provider.state == ProcessingState.processing,
-              ),
-            ),
-          ],
+              
+              // Bottom padding for navigation
+              const SizedBox(height: 100),
+            ],
+          ),
         );
       },
     );

@@ -70,56 +70,63 @@ class _LoadingOverlayWidgetState extends State<LoadingOverlayWidget>
   Widget build(BuildContext context) {
     if (!widget.isVisible) return const SizedBox.shrink();
 
-    return AnimatedOpacity(
-      opacity: widget.isVisible ? 1.0 : 0.0,
-      duration: const Duration(milliseconds: 300),
-      child: BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
+    return Material(
+      color: Colors.transparent,
+      child: AnimatedOpacity(
+        opacity: widget.isVisible ? 1.0 : 0.0,
+        duration: const Duration(milliseconds: 300),
         child: Container(
           width: double.infinity,
           height: double.infinity,
-          color: Colors.black.withOpacity(0.3), // Semi-transparent overlay
-          child: Center(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                // Animated sparkles icon
-                AnimatedBuilder(
-                  animation: _sparkleAnimation,
-                  builder: (context, child) {
-                    return AnimatedBuilder(
-                      animation: _pulseAnimation,
+          child: BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 15.0, sigmaY: 15.0),
+            child: Container(
+              width: double.infinity,
+              height: double.infinity,
+              color: Colors.black.withOpacity(0.6), // Darker overlay for better coverage
+              child: Center(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    // Animated sparkles icon
+                    AnimatedBuilder(
+                      animation: _sparkleAnimation,
                       builder: (context, child) {
-                        return Transform.scale(
-                          scale: _pulseAnimation.value,
-                          child: Transform.rotate(
-                            angle: _sparkleAnimation.value * 6.28, // Full rotation
-                            child: const Text(
-                              '✨',
-                              style: TextStyle(
-                                fontSize: 64,
+                        return AnimatedBuilder(
+                          animation: _pulseAnimation,
+                          builder: (context, child) {
+                            return Transform.scale(
+                              scale: _pulseAnimation.value,
+                              child: Transform.rotate(
+                                angle: _sparkleAnimation.value * 6.28, // Full rotation
+                                child: const Text(
+                                  '✨',
+                                  style: TextStyle(
+                                    fontSize: 64,
+                                  ),
+                                ),
                               ),
-                            ),
-                          ),
+                            );
+                          },
                         );
                       },
-                    );
-                  },
+                    ),
+                    
+                    const SizedBox(height: 24),
+                    
+                    // Loading message
+                    const Text(
+                      'Đang xử lý...',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.white,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ],
                 ),
-                
-                const SizedBox(height: 24),
-                
-                // Loading message
-                const Text(
-                  'Đang xử lý...',
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.white,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-              ],
+              ),
             ),
           ),
         ),
