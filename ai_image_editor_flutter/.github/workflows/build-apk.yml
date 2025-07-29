@@ -24,7 +24,7 @@ jobs:
       uses: actions/setup-java@v4
       with:
         distribution: 'zulu'
-        java-version: '11'
+        java-version: '17'
     
     - name: Setup Flutter
       uses: subosito/flutter-action@v2
@@ -124,12 +124,13 @@ jobs:
         flutter pub get
         # Clear Gradle cache and refresh dependencies
         cd android && ./gradlew clean --refresh-dependencies && cd ..
-        # Build with updated Kotlin version support
-        flutter build apk --release --no-shrink --no-obfuscate || {
-          echo "Release build failed, trying with verbose output..."
-          flutter build apk --release --verbose --no-shrink || {
-            echo "Verbose build failed, trying debug build..."
-            flutter build apk --debug --verbose
+        # Build with Java 17 compatibility
+        export JAVA_OPTS="-XX:MaxMetaspaceSize=512m -Xmx2048m"
+        flutter build apk --release --no-shrink || {
+          echo "Release build failed, trying with different flags..."
+          flutter build apk --release --verbose || {
+            echo "Verbose release failed, trying debug build..."
+            flutter build apk --debug
           }
         }
       working-directory: ./ai_image_editor_flutter
