@@ -7,6 +7,7 @@ import '../widgets/enhanced_editor_widget.dart';
 import '../widgets/processing_widget.dart';
 import '../widgets/result_widget.dart';
 import '../widgets/bottom_navigation_widget.dart';
+import '../widgets/loading_overlay_widget.dart';
 import 'settings_screen.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -26,25 +27,38 @@ class HomeScreen extends StatelessWidget {
       backgroundColor: const Color(0xFFF8FAFC),
       extendBodyBehindAppBar: true,
       extendBody: true,
-      body: SafeArea(
-        child: Column(
-          children: [
-            // Header
-            _buildHeader(context),
-            
-            // Main content
-            Expanded(
-              child: Consumer<ImageEditProvider>(
-                builder: (context, provider, child) {
-                  return _buildMainContent(context, provider);
-                },
+      body: Consumer<ImageEditProvider>(
+        builder: (context, provider, child) {
+          return Stack(
+            children: [
+              // Main app content
+              SafeArea(
+                child: Column(
+                  children: [
+                    // Header
+                    _buildHeader(context),
+                    
+                    // Main content
+                    Expanded(
+                      child: _buildMainContent(context, provider),
+                    ),
+                    
+                    // Bottom Navigation
+                    const BottomNavigationWidget(),
+                  ],
+                ),
               ),
-            ),
-            
-            // Bottom Navigation
-            const BottomNavigationWidget(),
-          ],
-        ),
+              
+              // Loading overlay
+              Positioned.fill(
+                child: LoadingOverlayWidget(
+                  message: _getLoadingMessage(provider.currentOperation),
+                  isVisible: provider.state == ProcessingState.processing,
+                ),
+              ),
+            ],
+          );
+        },
       ),
     );
   }
@@ -215,6 +229,29 @@ class HomeScreen extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  String _getLoadingMessage(String operation) {
+    switch (operation) {
+      case 'Xóa nền':
+        return 'Đang xóa nền ảnh';
+      case 'Tạo ảnh từ văn bản':
+        return 'Đang tạo ảnh từ văn bản';
+      case 'Dọn dẹp ảnh':
+        return 'Đang dọn dẹp ảnh';
+      case 'Mở rộng ảnh':
+        return 'Đang mở rộng ảnh';
+      case 'Tái tạo ảnh':
+        return 'Đang tái tạo ảnh';
+      case 'Thay đổi nền':
+        return 'Đang thay đổi nền';
+      case 'Xóa văn bản':
+        return 'Đang xóa văn bản';
+      case 'Chụp sản phẩm':
+        return 'Đang tạo ảnh sản phẩm';
+      default:
+        return 'Đang xử lý ảnh';
+    }
   }
 
   void _showMenu(BuildContext context) {
