@@ -5,13 +5,13 @@ import 'package:share_plus/share_plus.dart';
 import 'package:path_provider/path_provider.dart';
 
 class ResultWidget extends StatefulWidget {
-  final File originalImage;
+  final File? originalImage; // Can be null for text-to-image operations
   final Uint8List processedImage;
   final VoidCallback onStartOver;
 
   const ResultWidget({
     super.key,
-    required this.originalImage,
+    this.originalImage, // Optional for text-to-image
     required this.processedImage,
     required this.onStartOver,
   });
@@ -21,7 +21,14 @@ class ResultWidget extends StatefulWidget {
 }
 
 class _ResultWidgetState extends State<ResultWidget> {
-  bool _showComparison = true;
+  late bool _showComparison;
+
+  @override
+  void initState() {
+    super.initState();
+    // Default to comparison view only if we have an original image
+    _showComparison = widget.originalImage != null;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -43,15 +50,16 @@ class _ResultWidgetState extends State<ResultWidget> {
                   color: Color(0xFF1e293b),
                 ),
               ),
-              TextButton.icon(
-                onPressed: () {
-                  setState(() {
-                    _showComparison = !_showComparison;
-                  });
-                },
-                icon: const Icon(Icons.compare_arrows),
-                label: Text(_showComparison ? 'Chỉ kết quả' : 'So sánh'),
-              ),
+              if (widget.originalImage != null) // Only show comparison toggle if we have original image
+                TextButton.icon(
+                  onPressed: () {
+                    setState(() {
+                      _showComparison = !_showComparison;
+                    });
+                  },
+                  icon: const Icon(Icons.compare_arrows),
+                  label: Text(_showComparison ? 'Chỉ kết quả' : 'So sánh'),
+                ),
             ],
           ),
           
@@ -72,7 +80,7 @@ class _ResultWidgetState extends State<ResultWidget> {
             ),
             child: ClipRRect(
               borderRadius: BorderRadius.circular(16),
-              child: _showComparison
+              child: (widget.originalImage != null && _showComparison)
                   ? _buildComparisonView()
                   : _buildSingleView(),
             ),
@@ -264,7 +272,7 @@ class _ResultWidgetState extends State<ResultWidget> {
             children: [
               Expanded(
                 child: Image.file(
-                  widget.originalImage,
+                  widget.originalImage!, // We only call this when originalImage is not null
                   fit: BoxFit.cover,
                 ),
               ),

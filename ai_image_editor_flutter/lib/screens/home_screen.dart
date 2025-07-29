@@ -119,7 +119,7 @@ class HomeScreen extends StatelessWidget {
       case ProcessingState.completed:
         if (provider.processedImage != null) {
           return ResultWidget(
-            originalImage: provider.originalImage!,
+            originalImage: provider.originalImage, // Can be null for text-to-image
             processedImage: provider.processedImage!,
             onStartOver: provider.reset,
           );
