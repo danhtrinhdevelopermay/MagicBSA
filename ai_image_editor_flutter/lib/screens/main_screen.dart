@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 import '../providers/image_provider.dart';
 import '../widgets/image_upload_widget.dart';
 import '../widgets/enhanced_editor_widget.dart';
-import '../widgets/processing_widget.dart';
+
 import '../widgets/result_widget.dart';
 import '../widgets/loading_overlay_widget.dart';
 import 'history_screen.dart';
@@ -211,10 +211,7 @@ class _MainScreenState extends State<MainScreen> {
       case ProcessingState.picking:
         return const ImageUploadWidget();
       case ProcessingState.processing:
-        return ProcessingWidget(
-          operation: provider.currentOperation.isNotEmpty ? provider.currentOperation : 'Đang xử lý...',
-          progress: provider.progress,
-        );
+        return const ImageUploadWidget(); // Show upload widget since overlay handles processing UI
       case ProcessingState.completed:
         return ResultWidget(
           originalImage: provider.originalImage,
