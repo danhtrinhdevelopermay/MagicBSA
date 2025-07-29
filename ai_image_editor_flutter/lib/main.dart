@@ -3,9 +3,13 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'screens/splash_screen.dart';
 import 'providers/image_provider.dart';
+import 'services/audio_service.dart';
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  
+  // Initialize audio service
+  await AudioService().initialize();
   
   // Set transparent system bars with proper edge-to-edge
   SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(

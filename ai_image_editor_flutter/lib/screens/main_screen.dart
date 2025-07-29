@@ -7,6 +7,8 @@ import '../widgets/enhanced_editor_widget.dart';
 
 import '../widgets/result_widget.dart';
 import '../widgets/loading_overlay_widget.dart';
+import '../widgets/audio_controls_widget.dart';
+import '../services/audio_service.dart';
 import 'history_screen.dart';
 import 'premium_screen.dart';
 import 'profile_screen.dart';
@@ -179,6 +181,8 @@ class _MainScreenState extends State<MainScreen> {
             ),
           ),
           const Spacer(),
+          const AudioControlsWidget(),
+          const SizedBox(width: 8),
           IconButton(
             onPressed: () {
               Navigator.of(context).push(

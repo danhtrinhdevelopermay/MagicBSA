@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'main_screen.dart';
+import '../services/audio_service.dart';
+import '../widgets/audio_controls_widget.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -106,6 +108,9 @@ class _SplashScreenState extends State<SplashScreen>
   }
 
   void _startAnimations() async {
+    // Start background music
+    await AudioService().playBackgroundMusic();
+    
     // Start logo animation
     await _logoController.forward();
     
@@ -167,10 +172,12 @@ class _SplashScreenState extends State<SplashScreen>
               child: SafeArea(
                 top: false,
                 bottom: false,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
+                child: Stack(
                   children: [
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
                     const Spacer(flex: 2),
                     
                     // Logo with animation
@@ -301,9 +308,17 @@ class _SplashScreenState extends State<SplashScreen>
                       ),
                     ),
                     
-                    const SizedBox(height: 40),
-                  ],
-                ),
+                      const SizedBox(height: 40),
+                    ],
+                  ),
+                  
+                  // Audio controls in top-right corner
+                  const Positioned(
+                    top: 60,
+                    right: 20,
+                    child: AudioControlsWidget(),
+                  ),
+                ],
               ),
             ),
           );
