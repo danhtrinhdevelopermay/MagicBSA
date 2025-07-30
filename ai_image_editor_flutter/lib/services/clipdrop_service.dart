@@ -14,6 +14,7 @@ enum ProcessingOperation {
   replaceBackground,
   textToImage,
   productPhotography,
+  upscaleImage,
 }
 
 class ClipDropService {
@@ -26,6 +27,7 @@ class ClipDropService {
   static const String _replaceBackgroundUrl = 'https://clipdrop-api.co/replace-background/v1';
   static const String _textToImageUrl = 'https://clipdrop-api.co/text-to-image/v1';
   static const String _productPhotoUrl = 'https://clipdrop-api.co/product-photography/v1';
+  static const String _upscaleUrl = 'https://clipdrop-api.co/image-upscaling/v1/upscale';
 
   late Dio _dio;
   String _currentApiKey = '';
@@ -204,6 +206,9 @@ class ClipDropService {
         case ProcessingOperation.productPhotography:
           apiUrl = _productPhotoUrl;
           break;
+        case ProcessingOperation.upscaleImage:
+          apiUrl = _upscaleUrl;
+          break;
       }
 
       final formData = FormData.fromMap({
@@ -272,6 +277,12 @@ class ClipDropService {
           if (scene != null) {
             formData.fields.add(MapEntry('scene', scene));
           }
+          break;
+          
+        case ProcessingOperation.upscaleImage:
+          formData.fields.add(MapEntry('target_width', (targetWidth ?? 2048).toString()));
+          formData.fields.add(MapEntry('target_height', (targetHeight ?? 2048).toString()));
+          print('Upscale API call with target dimensions: ${targetWidth ?? 2048}x${targetHeight ?? 2048}');
           break;
         
         default:
@@ -403,6 +414,49 @@ class ClipDropService {
     );
   }
 
+  // Image upscaling with target dimensions
+  Future<Uint8List> upscaleImage(File imageFile, {required int targetWidth, required int targetHeight}) async {
+    print('=== UPSCALE IMAGE START ===');
+    print('Target dimensions: ${targetWidth}x${targetHeight}');
+    
+    // Validate target dimensions according to Clipdrop docs
+    if (targetWidth < 1 || targetWidth > 4096) {
+      throw Exception('Target width phải từ 1 đến 4096 pixels. Hiện tại: $targetWidth');
+    }
+    if (targetHeight < 1 || targetHeight > 4096) {
+      throw Exception('Target height phải từ 1 đến 4096 pixels. Hiện tại: $targetHeight');
+    }
+    
+    print('File exists: ${await imageFile.exists()}');
+    
+    try {
+      final result = await processImage(
+        imageFile, 
+        ProcessingOperation.upscaleImage,
+        targetWidth: targetWidth,
+        targetHeight: targetHeight,
+      );
+      print('=== UPSCALE SUCCESS ===');
+      return result;
+    } catch (e) {
+      print('=== UPSCALE ERROR ===');
+      print('Error type: ${e.runtimeType}');
+      print('Error message: $e');
+      
+      // Provide more specific error message for upscaling
+      if (e.toString().toLowerCase().contains('402') || 
+          e.toString().toLowerCase().contains('payment')) {
+        throw Exception('API đã hết credit cho tính năng Upscale. Vui lòng kiểm tra tài khoản Clipdrop hoặc mua thêm credit tại https://clipdrop.co/apis/pricing');
+      } else if (e.toString().toLowerCase().contains('401')) {
+        throw Exception('API key không hợp lệ cho tính năng Upscale. Vui lòng kiểm tra API key trong Cài đặt.');
+      } else if (e.toString().toLowerCase().contains('400')) {
+        throw Exception('Ảnh không hợp lệ cho Upscale. Vui lòng thử với ảnh khác (PNG/JPG/WebP, dưới 16MP, max 30MB).');
+      }
+      
+      rethrow;
+    }
+  }
+
   Future<Uint8List> replaceBackground(File imageFile, {File? backgroundFile, String? prompt}) async {
     return processImage(
       imageFile, 
@@ -496,6 +550,11 @@ class ClipDropService {
         // 1024x1024 for these APIs
         maxWidth = maxHeight = 1024;
         operationName = operation.toString().split('.').last;
+        break;
+      case ProcessingOperation.upscaleImage:
+        // 16 megapixels = 4000x4000 approximately (same as cleanup)
+        maxWidth = maxHeight = 4000;
+        operationName = 'Upscale';
         break;
       default:
         // Conservative default
