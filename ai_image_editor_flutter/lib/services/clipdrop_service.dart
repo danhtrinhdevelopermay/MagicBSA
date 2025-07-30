@@ -75,29 +75,58 @@ class ClipDropService {
     try {
       return await operation();
     } on DioException catch (e) {
+      // Enhanced logging for debugging
+      print('DioException caught: ${e.response?.statusCode}');
+      print('Error message: ${e.message}');
+      print('Response data: ${e.response?.data}');
+      print('Response headers: ${e.response?.headers}');
+      
       // Check if it's a quota/credit related error
-      final isQuotaError = e.response?.statusCode == 400 ||
-                         e.response?.statusCode == 402 ||
+      final isQuotaError = e.response?.statusCode == 402 ||  // Payment Required (official Clipdrop credit error)
+                         e.response?.statusCode == 400 ||    // Bad Request (might include quota info)
                          (e.response?.data != null && 
                           e.response!.data.toString().toLowerCase().contains('quota')) ||
                          (e.response?.data != null && 
-                          e.response!.data.toString().toLowerCase().contains('credit'));
+                          e.response!.data.toString().toLowerCase().contains('credit')) ||
+                         (e.response?.data != null && 
+                          e.response!.data.toString().toLowerCase().contains('limit')) ||
+                         (e.response?.data != null && 
+                          e.response!.data.toString().toLowerCase().contains('exceeded'));
       
       if (isQuotaError && !_usingBackupApi) {
-        print('API chính hết credit/quota, đang chuyển sang API dự phòng...');
+        print('API chính hết credit/quota (Status: ${e.response?.statusCode}), đang chuyển sang API dự phòng...');
         _switchToBackupApi();
         
         // Retry with backup API
         try {
+          print('Đang thử lại với API dự phòng...');
           return await operation();
         } catch (retryError) {
-          // If backup also fails, throw original error
+          print('API dự phòng cũng gặp lỗi: $retryError');
+          // If backup also fails, check if it's also quota error
+          if (retryError is DioException && retryError.response?.statusCode == 402) {
+            throw Exception('Cả hai API đều đã hết credit. Vui lòng mua thêm credit tại https://clipdrop.co/apis/pricing');
+          }
           rethrow;
         }
       } else if (isQuotaError && _usingBackupApi) {
         // Both APIs exhausted
-        throw Exception('Cả hai API đều đã hết credit/quota. Vui lòng thử lại sau hoặc liên hệ để nạp thêm credit.');
+        throw Exception('Cả hai API đều đã hết credit. Vui lòng mua thêm credit tại https://clipdrop.co/apis/pricing');
       }
+      
+      // For non-quota errors, provide more specific error messages
+      if (e.response?.statusCode == 401) {
+        throw Exception('API key không hợp lệ. Vui lòng kiểm tra lại API key trong Cài đặt.');
+      } else if (e.response?.statusCode == 429) {
+        throw Exception('Quá nhiều request. Vui lòng thử lại sau ít phút.');
+      } else if (e.response?.statusCode == 400) {
+        final errorData = e.response?.data?.toString() ?? '';
+        if (errorData.toLowerCase().contains('file') || errorData.toLowerCase().contains('image')) {
+          throw Exception('Định dạng ảnh không hợp lệ. Vui lòng chọn ảnh PNG, JPEG hoặc WebP dưới 1024x1024 pixels.');
+        }
+        throw Exception('Yêu cầu không hợp lệ: $errorData');
+      }
+      
       rethrow;
     }
   }
@@ -156,6 +185,7 @@ class ClipDropService {
           break;
         case ProcessingOperation.reimagine:
           apiUrl = _reimagineUrl;
+          print('Using Reimagine API endpoint: $apiUrl');
           break;
         case ProcessingOperation.replaceBackground:
           apiUrl = _replaceBackgroundUrl;
@@ -256,6 +286,17 @@ class ClipDropService {
       
       if (response.statusCode == 200) {
         print('API call successful, image data size: ${response.data.length} bytes');
+        
+        // Log credit information from headers
+        final remainingCredits = response.headers.value('x-remaining-credits');
+        final consumedCredits = response.headers.value('x-credits-consumed');
+        if (remainingCredits != null) {
+          print('Credits remaining: $remainingCredits');
+        }
+        if (consumedCredits != null) {
+          print('Credits consumed: $consumedCredits');
+        }
+        
         return Uint8List.fromList(response.data);
       } else {
         print('API error response: ${response.data}');
@@ -373,5 +414,54 @@ class ClipDropService {
   // Method to manually reset to primary API (useful for testing/recovery)
   void resetToPrimaryApi() {
     _resetToPrimaryApi();
+  }
+
+  // Method to check API credits status
+  Future<Map<String, dynamic>> checkCreditsStatus() async {
+    if (_currentApiKey.isEmpty) {
+      await _loadApiKeys();
+      _dio.options.headers['x-api-key'] = _currentApiKey;
+    }
+
+    try {
+      // Use a simple API call to check credits (remove background is cheapest)
+      final tempFile = File('temp_check.jpg');
+      // Create a small temp image for testing
+      await tempFile.writeAsBytes([
+        0xFF, 0xD8, 0xFF, 0xE0, 0x00, 0x10, 0x4A, 0x46, 0x49, 0x46, 0x00, 0x01,
+        0x01, 0x01, 0x00, 0x48, 0x00, 0x48, 0x00, 0x00, 0xFF, 0xDB, 0x00, 0x43
+      ]); // Minimal JPEG header
+
+      final formData = FormData.fromMap({
+        'image_file': await MultipartFile.fromFile(tempFile.path, filename: 'test.jpg'),
+      });
+
+      final response = await _dio.post(
+        _removeBackgroundUrl,
+        data: formData,
+        options: Options(responseType: ResponseType.bytes),
+      );
+
+      // Clean up temp file
+      if (await tempFile.exists()) {
+        await tempFile.delete();
+      }
+
+      final remainingCredits = response.headers.value('x-remaining-credits');
+      final consumedCredits = response.headers.value('x-credits-consumed');
+
+      return {
+        'success': true,
+        'remainingCredits': remainingCredits ?? 'unknown',
+        'consumedCredits': consumedCredits ?? 'unknown',
+        'apiStatus': currentApiStatus,
+      };
+    } catch (e) {
+      return {
+        'success': false,
+        'error': e.toString(),
+        'apiStatus': currentApiStatus,
+      };
+    }
   }
 }
