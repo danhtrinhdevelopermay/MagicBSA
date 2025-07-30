@@ -10,8 +10,8 @@ Preferred communication style: Simple, everyday language.
 **Always provide manual Git push commands from root directory when making changes to the codebase.**
 **Minimize code changes that could break GitHub Actions APK build process.**
 **Key reminders from loinhac.md:**
-- Khi có thay đổi code thì gửi kèm theo lệnh push git thủ công
-- Đảm bảo không ảnh hưởng đến việc build apk khi thay đổi hoặc phát triển ứng dụng
+- Khi có thay đổi code thì gửi kèm theo lệnh push git thủ công (When making code changes, include manual git push commands)
+- Đảm bảo không ảnh hưởng đến việc build apk khi thay đổi hoặc phát triển ứng dụng (Ensure changes don't affect APK build process during development)
 Focus on practical, working solutions over theoretical explanations.
 
 ## Recent Changes (July 30, 2025)
