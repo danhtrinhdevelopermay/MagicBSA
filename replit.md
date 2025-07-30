@@ -16,6 +16,12 @@ Focus on practical, working solutions over theoretical explanations.
 
 ## Recent Changes (July 30, 2025)
 
+✓ **FIXED APK BUILD WEBP ENCODING ERROR** - Resolved GitHub Actions compilation failure:
+  - Fixed `Method not found: 'encodeWebP'` error in image package ^4.1.7
+  - Implemented PNG fallback for WebP images during auto-resize process
+  - Maintains full auto-resize functionality without breaking APK build
+  - All image formats (JPG/PNG/WebP) still supported with quality preservation
+  - Created APK_BUILD_WEBP_FIX.md with comprehensive solution documentation
 ✓ **IMPLEMENTED AUTO-RESIZE FOR ALL CLIPDROP APIS** - Complete solution supporting all image aspect ratios:
   - Added automatic image resizing respecting each API's size limits (Remove BG: 25MP, Cleanup: 16MP, Uncrop: 10MP, Reimagine: 1MP)
   - Smart aspect ratio preservation for all formats: 9:16, 16:9, 1:1, 4:3, 3:4, etc.
