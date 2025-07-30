@@ -81,10 +81,8 @@ class _MainScreenState extends State<MainScreen> {
               ),
               
               // Bottom Navigation
-              Positioned(
-                bottom: 0,
-                left: 0,
-                right: 0,
+              Align(
+                alignment: Alignment.bottomCenter,
                 child: _buildBottomNavigation(),
               ),
               
@@ -261,6 +259,8 @@ class _MainScreenState extends State<MainScreen> {
 
   Widget _buildBottomNavigation() {
     return Container(
+      width: double.infinity,
+      margin: EdgeInsets.zero,
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: const BorderRadius.only(
@@ -287,11 +287,12 @@ class _MainScreenState extends State<MainScreen> {
           topRight: Radius.circular(24),
         ),
         child: SafeArea(
+          top: false,
           child: Container(
-            height: 70,
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+            height: 60,
+            padding: const EdgeInsets.only(left: 4, right: 4, top: 2, bottom: 4),
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 _buildNavItem(
                   icon: Icons.home_outlined,
@@ -342,7 +343,7 @@ class _MainScreenState extends State<MainScreen> {
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 300),
         curve: Curves.easeInOutCubic,
-        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+        padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 8),
         decoration: BoxDecoration(
           gradient: isActive
               ? LinearGradient(
