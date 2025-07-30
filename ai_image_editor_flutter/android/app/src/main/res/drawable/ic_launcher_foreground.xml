@@ -9,24 +9,10 @@
       android:translateX="34.56"
       android:translateY="34.56">
     <path
-        android:fillType="nonZero"
-        android:pathData="M54,0 C24.176,0 0,24.176 0,54 C0,83.824 24.176,108 54,108 C83.824,108 108,83.824 108,54 C108,24.176 83.824,0 54,0 Z">
-      <aapt:attr name="android:fillColor">
-        <gradient
-            android:startX="0"
-            android:startY="0"
-            android:endX="108"
-            android:endY="108"
-            android:type="linear">
-          <item android:offset="0" android:color="#FF6366F1"/>
-          <item android:offset="0.5" android:color="#FF8B5CF6"/>
-          <item android:offset="1" android:color="#FFEC4899"/>
-        </gradient>
-      </aapt:attr>
-    </path>
+        android:fillColor="#6366F1"
+        android:pathData="M54,0 C24.176,0 0,24.176 0,54 C0,83.824 24.176,108 54,108 C83.824,108 108,83.824 108,54 C108,24.176 83.824,0 54,0 Z"/>
     <path
         android:fillColor="#FFFFFF"
-        android:pathData="M54,20 L70,36 L54,52 L38,36 Z M54,56 L70,72 L54,88 L38,72 Z"
-        android:fillType="nonZero"/>
+        android:pathData="M54,20 L70,36 L54,52 L38,36 Z M54,56 L70,72 L54,88 L38,72 Z"/>
   </group>
 </vector>
