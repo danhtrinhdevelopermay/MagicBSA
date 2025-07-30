@@ -36,12 +36,12 @@ Focus on practical, working solutions over theoretical explanations.
   - Removed XML gradient dependencies that caused resource compilation errors
   - Adaptive icon now uses PNG foreground instead of vector drawable
   - APK build should now pass GitHub Actions without XML parsing errors
-✓ **UPDATED LAUNCHER ICON WITH CORRECT LOGO** - Applied user's official TwinkBSA logo:
-  - Replaced all Android launcher icon sizes (48x48 to 192x192) with original PNG logo file
-  - Removed custom vector XML and used direct PNG conversion for exact logo accuracy
-  - Created ic_launcher_foreground.png files in all density folders (mdpi to xxxhdpi)
-  - Updated app_icon.png in assets with original logo file for consistent branding
-  - Launcher icon now displays exact TwinkBSA logo as provided by user (not custom drawn version)
+✓ **UPDATED LAUNCHER ICON WITH OPTIMIZED LOGO** - Applied user's optimized TwinkBSA logo:
+  - Replaced all Android launcher icon sizes (48x48 to 192x192) with new optimized PNG logo
+  - Used better-sized logo to prevent zoom issues and visual clipping on launcher
+  - Created ic_launcher_foreground.png files in all density folders with proper scaling
+  - Updated app_icon.png in assets with new logo for consistent branding throughout app
+  - Launcher icon now displays perfectly without being cropped or zoomed inappropriately
 
 ✓ **FIXED APK BUILD ERROR** - Resolved GitHub Actions APK build failure caused by XML namespace issue:
   - Fixed ic_launcher_foreground.xml with missing aapt namespace declaration
