@@ -16,6 +16,12 @@ Focus on practical, working solutions over theoretical explanations.
 
 ## Recent Changes (July 30, 2025)
 
+✓ **FIXED CLIPDROP REIMAGINE API 404 ERROR** - Resolved reimagine feature failing with 404 by correcting API endpoint:
+  - Fixed API URL from '/reimagine/v1' to '/reimagine/v1/reimagine' according to official Clipdrop documentation
+  - Endpoint now matches official docs: POST https://clipdrop-api.co/reimagine/v1/reimagine
+  - Reimagine feature now works properly with correct multipart/form-data and image_file parameter
+  - No other changes needed as implementation was already correct (auth, form data, response handling)
+  - Created CLIPDROP_REIMAGINE_FIX.md with comprehensive documentation
 ✓ **FIXED MASK DRAWING CANVAS ISSUE** - Resolved critical "100% ảnh sẽ bị xóa" error when user draws small mask strokes:
   - Created separate mask-only canvas using PictureRecorder without background contamination
   - Fixed canvas capture to render only white strokes on transparent background, not entire background image

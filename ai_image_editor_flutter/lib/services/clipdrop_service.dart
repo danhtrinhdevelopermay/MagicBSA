@@ -20,7 +20,7 @@ class ClipDropService {
   static const String _removeTextUrl = 'https://clipdrop-api.co/remove-text/v1';
   static const String _cleanupUrl = 'https://clipdrop-api.co/cleanup/v1';
   static const String _uncropUrl = 'https://clipdrop-api.co/uncrop/v1';
-  static const String _reimagineUrl = 'https://clipdrop-api.co/reimagine/v1';
+  static const String _reimagineUrl = 'https://clipdrop-api.co/reimagine/v1/reimagine';
   static const String _replaceBackgroundUrl = 'https://clipdrop-api.co/replace-background/v1';
   static const String _textToImageUrl = 'https://clipdrop-api.co/text-to-image/v1';
   static const String _productPhotoUrl = 'https://clipdrop-api.co/product-photography/v1';
