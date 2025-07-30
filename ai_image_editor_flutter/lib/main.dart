@@ -46,7 +46,7 @@ class AIImageEditorApp extends StatelessWidget {
     return ChangeNotifierProvider(
       create: (context) => ImageEditProvider(),
       child: MaterialApp(
-        title: 'TwinkBSA',
+        title: 'Twink AI',
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
           colorScheme: ColorScheme.fromSeed(

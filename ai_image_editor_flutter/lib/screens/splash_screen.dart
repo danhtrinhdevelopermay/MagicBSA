@@ -232,7 +232,7 @@ class _SplashScreenState extends State<SplashScreen>
                                     crossAxisAlignment: CrossAxisAlignment.center,
                                     children: [
                                       const Text(
-                                        'TwinkBSA',
+                                        'Twink AI',
                                         textAlign: TextAlign.center,
                                         style: TextStyle(
                                           fontSize: 32,

@@ -52,7 +52,7 @@ class ImageUploadWidget extends StatelessWidget {
                 ),
                 const SizedBox(height: 16),
                 const Text(
-                  'AI Image Editor',
+                  'Twink AI',
                   style: TextStyle(
                     fontSize: 28,
                     fontWeight: FontWeight.bold,
