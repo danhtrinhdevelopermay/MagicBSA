@@ -3,7 +3,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 /// Service quản lý OneSignal push notifications cho TwinkBSA app
 class OneSignalService {
-  static const String _oneSignalAppId = "YOUR_ONESIGNAL_APP_ID"; // Thay bằng OneSignal App ID thực tế
+  static const String _oneSignalAppId = "a503a5c7-6b11-404a-b0ea-8505fdaf59e8"; // OneSignal App ID
   static const String _userIdKey = "onesignal_user_id";
   
   static OneSignalService? _instance;

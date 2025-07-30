@@ -31,17 +31,13 @@
 
 ## Bước 4: Cập nhật mã nguồn
 
-Mở file `ai_image_editor_flutter/lib/services/onesignal_service.dart` và thay thế:
+Mở file `ai_image_editor_flutter/lib/services/onesignal_service.dart` - **ĐÃ ĐƯỢC CẤU HÌNH**:
 
 ```dart
-static const String _oneSignalAppId = "YOUR_ONESIGNAL_APP_ID"; 
+static const String _oneSignalAppId = "a503a5c7-6b11-404a-b0ea-8505fdaf59e8"; // OneSignal App ID
 ```
 
-Thành:
-
-```dart
-static const String _oneSignalAppId = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"; // OneSignal App ID thực tế của bạn
-```
+✅ **OneSignal App ID đã được cấu hình sẵn trong dự án.**
 
 ## Bước 5: Cấu hình Firebase (Android)
 
