@@ -118,7 +118,7 @@ class _MainScreenState extends State<MainScreen> {
               ),
               
               // Bottom padding for navigation
-              const SizedBox(height: 90),
+              const SizedBox(height: 100),
             ],
           ),
         );
@@ -259,71 +259,74 @@ class _MainScreenState extends State<MainScreen> {
 
   Widget _buildBottomNavigation() {
     return Container(
-      width: double.infinity,
-      margin: EdgeInsets.zero,
+      margin: const EdgeInsets.fromLTRB(16, 0, 16, 20),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: const BorderRadius.only(
-          topLeft: Radius.circular(24),
-          topRight: Radius.circular(24),
+        gradient: LinearGradient(
+          colors: [
+            Colors.white,
+            Colors.white.withOpacity(0.95),
+          ],
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+        ),
+        borderRadius: BorderRadius.circular(24),
+        border: Border.all(
+          color: Colors.black.withOpacity(0.05),
+          width: 1,
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.08),
-            blurRadius: 20,
-            offset: const Offset(0, -4),
-            spreadRadius: 0,
+            color: const Color(0xFF000000).withOpacity(0.1),
+            blurRadius: 30,
+            offset: const Offset(0, 8),
+            spreadRadius: -5,
           ),
           BoxShadow(
-            color: const Color(0xFF6366f1).withOpacity(0.1),
-            blurRadius: 40,
-            offset: const Offset(0, -8),
+            color: const Color(0xFF6366f1).withOpacity(0.15),
+            blurRadius: 20,
+            offset: const Offset(0, 4),
+            spreadRadius: -2,
+          ),
+          BoxShadow(
+            color: Colors.white.withOpacity(0.8),
+            blurRadius: 1,
+            offset: const Offset(0, 1),
           ),
         ],
       ),
       child: ClipRRect(
-        borderRadius: const BorderRadius.only(
-          topLeft: Radius.circular(24),
-          topRight: Radius.circular(24),
-        ),
-        child: SafeArea(
-          top: false,
-          child: Container(
-            height: 60,
-            padding: const EdgeInsets.only(left: 4, right: 4, top: 2, bottom: 4),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                _buildNavItem(
-                  icon: Icons.home_outlined,
-                  activeIcon: Icons.home,
-                  label: 'Trang chủ',
-                  isActive: _currentIndex == 0,
-                  onTap: () => _onTabTapped(0),
-                ),
-                _buildNavItem(
-                  icon: Icons.history_outlined,
-                  activeIcon: Icons.history,
-                  label: 'Lịch sử',
-                  isActive: _currentIndex == 1,
-                  onTap: () => _onTabTapped(1),
-                ),
-                _buildNavItem(
-                  icon: Icons.star_border,
-                  activeIcon: Icons.star,
-                  label: 'Premium',
-                  isActive: _currentIndex == 2,
-                  onTap: () => _onTabTapped(2),
-                ),
-                _buildNavItem(
-                  icon: Icons.person_outline,
-                  activeIcon: Icons.person,
-                  label: 'Hồ sơ',
-                  isActive: _currentIndex == 3,
-                  onTap: () => _onTabTapped(3),
-                ),
-              ],
-            ),
+        borderRadius: BorderRadius.circular(24),
+        child: Container(
+          height: 68,
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              _buildNavItem(
+                iconPath: 'assets/icons/home_icon.png',
+                label: 'Trang chủ',
+                isActive: _currentIndex == 0,
+                onTap: () => _onTabTapped(0),
+              ),
+              _buildNavItem(
+                iconPath: 'assets/icons/history_icon.png',
+                label: 'Lịch sử',
+                isActive: _currentIndex == 1,
+                onTap: () => _onTabTapped(1),
+              ),
+              _buildNavItem(
+                iconPath: 'assets/icons/premium_icon.png',
+                label: 'Premium',
+                isActive: _currentIndex == 2,
+                onTap: () => _onTabTapped(2),
+              ),
+              _buildNavItem(
+                iconPath: 'assets/icons/profile_icon.png',
+                label: 'Hồ sơ',
+                isActive: _currentIndex == 3,
+                onTap: () => _onTabTapped(3),
+              ),
+            ],
           ),
         ),
       ),
@@ -331,8 +334,7 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   Widget _buildNavItem({
-    required IconData icon,
-    required IconData activeIcon,
+    required String iconPath,
     required String label,
     required bool isActive,
     required VoidCallback onTap,
@@ -343,7 +345,7 @@ class _MainScreenState extends State<MainScreen> {
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 300),
         curve: Curves.easeInOutCubic,
-        padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 8),
+        padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 12),
         decoration: BoxDecoration(
           gradient: isActive
               ? LinearGradient(
@@ -355,13 +357,14 @@ class _MainScreenState extends State<MainScreen> {
                   end: Alignment.bottomCenter,
                 )
               : null,
-          borderRadius: BorderRadius.circular(24),
+          borderRadius: BorderRadius.circular(20),
           boxShadow: isActive
               ? [
                   BoxShadow(
-                    color: const Color(0xFF6366f1).withOpacity(0.2),
-                    blurRadius: 8,
-                    offset: const Offset(0, 2),
+                    color: const Color(0xFF6366f1).withOpacity(0.25),
+                    blurRadius: 12,
+                    offset: const Offset(0, 4),
+                    spreadRadius: 0,
                   ),
                 ]
               : null,
@@ -369,57 +372,81 @@ class _MainScreenState extends State<MainScreen> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
+            // Icon Container with enhanced animations
             AnimatedContainer(
-              duration: const Duration(milliseconds: 300),
+              duration: const Duration(milliseconds: 400),
               curve: Curves.elasticOut,
               transform: Matrix4.identity()
-                ..scale(isActive ? 1.1 : 1.0),
+                ..scale(isActive ? 1.15 : 1.0)
+                ..translate(0.0, isActive ? -2.0 : 0.0),
               child: AnimatedSwitcher(
-                duration: const Duration(milliseconds: 250),
+                duration: const Duration(milliseconds: 300),
                 switchInCurve: Curves.easeInOutBack,
                 switchOutCurve: Curves.easeInOutBack,
                 transitionBuilder: (child, animation) {
                   return ScaleTransition(
                     scale: animation,
-                    child: RotationTransition(
-                      turns: animation,
+                    child: SlideTransition(
+                      position: Tween<Offset>(
+                        begin: const Offset(0, 0.3),
+                        end: Offset.zero,
+                      ).animate(animation),
                       child: child,
                     ),
                   );
                 },
                 child: Container(
                   key: ValueKey(isActive),
-                  padding: const EdgeInsets.all(6),
+                  width: 32,
+                  height: 32,
+                  padding: const EdgeInsets.all(4),
                   decoration: BoxDecoration(
-                    color: isActive ? const Color(0xFF6366f1) : Colors.transparent,
-                    borderRadius: BorderRadius.circular(16),
+                    gradient: isActive
+                        ? LinearGradient(
+                            colors: [
+                              Colors.white.withOpacity(0.9),
+                              Colors.white.withOpacity(0.7),
+                            ],
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                          )
+                        : null,
+                    borderRadius: BorderRadius.circular(12),
                     boxShadow: isActive
                         ? [
                             BoxShadow(
                               color: const Color(0xFF6366f1).withOpacity(0.3),
-                              blurRadius: 12,
-                              offset: const Offset(0, 4),
+                              blurRadius: 8,
+                              offset: const Offset(0, 2),
                             ),
                           ]
                         : null,
                   ),
-                  child: Icon(
-                    isActive ? activeIcon : icon,
-                    color: isActive ? Colors.white : const Color(0xFF94a3b8),
-                    size: 22,
+                  child: AnimatedOpacity(
+                    duration: const Duration(milliseconds: 200),
+                    opacity: isActive ? 1.0 : 0.6,
+                    child: Image.asset(
+                      iconPath,
+                      width: 24,
+                      height: 24,
+                      fit: BoxFit.contain,
+                    ),
                   ),
                 ),
               ),
             ),
-            const SizedBox(height: 4),
+            
+            // Label with improved typography
+            const SizedBox(height: 6),
             AnimatedDefaultTextStyle(
               duration: const Duration(milliseconds: 300),
               curve: Curves.easeInOut,
               style: TextStyle(
-                fontSize: isActive ? 12 : 11,
+                fontSize: isActive ? 11.5 : 10.5,
                 fontWeight: isActive ? FontWeight.w700 : FontWeight.w500,
                 color: isActive ? const Color(0xFF6366f1) : const Color(0xFF64748b),
-                letterSpacing: isActive ? 0.5 : 0,
+                letterSpacing: isActive ? 0.3 : 0,
+                height: 1.2,
               ),
               child: AnimatedSlide(
                 duration: const Duration(milliseconds: 300),
@@ -428,24 +455,41 @@ class _MainScreenState extends State<MainScreen> {
                 child: Text(
                   label,
                   textAlign: TextAlign.center,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                 ),
               ),
             ),
+            
+            // Enhanced indicator with gradient
             AnimatedContainer(
               duration: const Duration(milliseconds: 400),
               curve: Curves.elasticOut,
-              margin: const EdgeInsets.only(top: 2),
-              height: isActive ? 3 : 0,
-              width: isActive ? 24 : 0,
+              margin: const EdgeInsets.only(top: 4),
+              height: isActive ? 2.5 : 0,
+              width: isActive ? 20 : 0,
               decoration: BoxDecoration(
                 gradient: isActive
                     ? const LinearGradient(
-                        colors: [Color(0xFF6366f1), Color(0xFF8b5cf6)],
+                        colors: [
+                          Color(0xFF6366f1),
+                          Color(0xFF8b5cf6),
+                          Color(0xFFd946ef),
+                        ],
                         begin: Alignment.centerLeft,
                         end: Alignment.centerRight,
                       )
                     : null,
                 borderRadius: BorderRadius.circular(2),
+                boxShadow: isActive
+                    ? [
+                        BoxShadow(
+                          color: const Color(0xFF6366f1).withOpacity(0.4),
+                          blurRadius: 4,
+                          offset: const Offset(0, 1),
+                        ),
+                      ]
+                    : null,
               ),
             ),
           ],
