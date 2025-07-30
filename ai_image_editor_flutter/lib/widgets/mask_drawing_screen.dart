@@ -127,11 +127,16 @@ class _MaskDrawingScreenState extends State<MaskDrawingScreen> {
           final pixel = resizedCanvasMask.getPixel(x, y);
           final alpha = pixel.a;
           // If alpha > threshold, mark as area to remove (white = 255)
-          if (alpha > 64) { // Lower threshold for better detection
-            binaryMask.setPixelRgb(x, y, 255, 255, 255);
+          // Use lower threshold for better detection of drawn strokes
+          if (alpha > 32) { // Lower threshold for better stroke detection
+            binaryMask.setPixelRgb(x, y, 255, 255, 255); // White = remove
           }
+          // Black areas (alpha <= 32) remain black = keep (already filled with black)
         }
       }
+
+      print('Mask created: ${originalImg.width}x${originalImg.height} pixels');
+      print('Binary mask: black (0) = keep, white (255) = remove');
 
       // Save mask file as PNG
       final directory = await getTemporaryDirectory();

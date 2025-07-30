@@ -20,7 +20,7 @@ class ClipDropService {
   // API endpoints (Updated to correct URLs from official documentation)
   static const String _removeBackgroundUrl = 'https://clipdrop-api.co/remove-background/v1';
   static const String _removeTextUrl = 'https://clipdrop-api.co/remove-text/v1';
-  static const String _cleanupUrl = 'https://apis.clipdrop.co/cleanup/v1'; // Correct URL
+  static const String _cleanupUrl = 'https://clipdrop-api.co/cleanup/v1'; // Fixed URL according to official docs
   static const String _uncropUrl = 'https://clipdrop-api.co/uncrop/v1';
   static const String _imageUpscalingUrl = 'https://clipdrop-api.co/image-upscaling/v1/upscale'; // Correct URL with /upscale
   static const String _reimagineUrl = 'https://clipdrop-api.co/reimagine/v1';
@@ -204,13 +204,13 @@ class ClipDropService {
               'mask_file',
               await MultipartFile.fromFile(
                 maskFile.path,
-                filename: 'mask.${maskFile.path.split('.').last}',
+                filename: 'mask.png', // Force PNG extension as required by API
               ),
             ));
+            // Add mode parameter for quality control (quality for better results)
+            formData.fields.add(MapEntry('mode', 'quality'));
           } else {
-            // For cleanup without mask, we can try automatic object removal
-            // Some cleanup APIs can work without explicit mask
-            print('Cleanup operation without mask - attempting automatic detection');
+            throw Exception('Cleanup operation requires a mask file');
           }
           break;
         
