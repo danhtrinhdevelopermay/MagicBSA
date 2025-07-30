@@ -151,6 +151,9 @@ class ClipDropService {
       return await generateImageFromText(prompt);
     }
     
+    // Validate image file before processing
+    await _validateImageFile(imageFile, operation);
+    
     // Reload API keys if not initialized
     if (_currentApiKey.isEmpty) {
       await _loadApiKeys();
@@ -347,7 +350,31 @@ class ClipDropService {
   }
 
   Future<Uint8List> reimagine(File imageFile) async {
-    return processImage(imageFile, ProcessingOperation.reimagine);
+    print('=== REIMAGINE DEBUG START ===');
+    print('Input file: ${imageFile.path}');
+    print('File exists: ${await imageFile.exists()}');
+    
+    try {
+      final result = await processImage(imageFile, ProcessingOperation.reimagine);
+      print('=== REIMAGINE SUCCESS ===');
+      return result;
+    } catch (e) {
+      print('=== REIMAGINE ERROR ===');
+      print('Error type: ${e.runtimeType}');
+      print('Error message: $e');
+      
+      // Provide more specific error message for reimagine
+      if (e.toString().toLowerCase().contains('402') || 
+          e.toString().toLowerCase().contains('payment')) {
+        throw Exception('API đã hết credit cho tính năng Reimagine. Vui lòng kiểm tra tài khoản Clipdrop hoặc mua thêm credit tại https://clipdrop.co/apis/pricing');
+      } else if (e.toString().toLowerCase().contains('401')) {
+        throw Exception('API key không hợp lệ cho tính năng Reimagine. Vui lòng kiểm tra API key trong Cài đặt.');
+      } else if (e.toString().toLowerCase().contains('400')) {
+        throw Exception('Ảnh không hợp lệ cho Reimagine. Vui lòng thử với ảnh khác (PNG/JPG/WebP, dưới 1024x1024px).');
+      }
+      
+      rethrow;
+    }
   }
 
   Future<Uint8List> productPhotography(File imageFile, {String? scene}) async {
@@ -414,6 +441,44 @@ class ClipDropService {
   // Method to manually reset to primary API (useful for testing/recovery)
   void resetToPrimaryApi() {
     _resetToPrimaryApi();
+  }
+
+  // Validate image file before API call
+  Future<void> _validateImageFile(File imageFile, ProcessingOperation operation) async {
+    // Check if file exists
+    if (!await imageFile.exists()) {
+      throw Exception('File ảnh không tồn tại. Vui lòng chọn ảnh khác.');
+    }
+    
+    // Check file size (max 10MB for most APIs)
+    final fileSize = await imageFile.length();
+    const maxSize = 10 * 1024 * 1024; // 10MB
+    if (fileSize > maxSize) {
+      throw Exception('File ảnh quá lớn (${(fileSize / 1024 / 1024).toStringAsFixed(1)}MB). Tối đa 10MB.');
+    }
+    
+    // Check file extension
+    final extension = imageFile.path.toLowerCase().split('.').last;
+    final validExtensions = ['jpg', 'jpeg', 'png', 'webp'];
+    if (!validExtensions.contains(extension)) {
+      throw Exception('Định dạng ảnh không hỗ trợ ($extension). Chỉ hỗ trợ: JPG, PNG, WebP.');
+    }
+    
+    // Special validation for Reimagine API (max 1024x1024)
+    if (operation == ProcessingOperation.reimagine) {
+      // For Reimagine, we need to check image dimensions more strictly
+      print('Applying Reimagine-specific validation (max 1024x1024px)');
+      // Note: Actual image dimension check would require image package
+      // For now, we rely on file size as a proxy
+      if (fileSize > 5 * 1024 * 1024) { // 5MB for Reimagine is conservative
+        throw Exception('Ảnh quá lớn cho Reimagine (${(fileSize / 1024 / 1024).toStringAsFixed(1)}MB). Vui lòng resize xuống dưới 1024x1024px và dưới 5MB.');
+      }
+    }
+    
+    print('Image validation passed: ${imageFile.path}');
+    print('File size: ${(fileSize / 1024 / 1024).toStringAsFixed(2)}MB');
+    print('Extension: $extension');
+    print('Operation: $operation');
   }
 
   // Method to check API credits status

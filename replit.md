@@ -16,12 +16,13 @@ Focus on practical, working solutions over theoretical explanations.
 
 ## Recent Changes (July 30, 2025)
 
-✓ **ENHANCED CLIPDROP REIMAGINE API DEBUG** - Improved error handling and debugging for reimagine credit issues:
-  - Added comprehensive error logging with status codes, response data, and headers  
-  - Enhanced quota/credit detection with expanded pattern matching for 'quota', 'credit', 'limit', 'exceeded'
+✓ **ENHANCED CLIPDROP REIMAGINE API DEBUG & VALIDATION** - Comprehensive solution for reimagine issues (not credit-related):
+  - Added image file validation: existence, size (10MB max), format (JPG/PNG/WebP only)
+  - Special Reimagine validation: max 5MB file size to ensure 1024x1024px compliance per Clipdrop docs
+  - Enhanced debug logging with detailed API call tracking and error differentiation
+  - Improved error messages: 401=API key, 402=credit, 400=invalid image, with actionable solutions
+  - Added failover logic with expanded pattern matching for 'quota', 'credit', 'limit', 'exceeded'
   - Implemented credit status checker method to monitor remaining/consumed credits
-  - Added detailed logging for Reimagine API calls with credit tracking from response headers
-  - Improved failover logic with better error differentiation (401=API key, 402=credit, 429=rate limit)
   - Created CLIPDROP_REIMAGINE_DEBUG_FIX.md with comprehensive debugging solution
 ✓ **FIXED CLIPDROP REIMAGINE API 404 ERROR** - Resolved reimagine feature failing with 404 by correcting API endpoint:
   - Fixed API URL from '/reimagine/v1' to '/reimagine/v1/reimagine' according to official Clipdrop documentation

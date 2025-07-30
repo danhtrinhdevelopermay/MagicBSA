@@ -36,6 +36,23 @@ User báo lỗi "hết credit/quota" cho tính năng Reimagine, nhưng các tín
 
 ### File: `lib/services/clipdrop_service.dart`
 
+**Image Validation**:
+```dart
+Future<void> _validateImageFile(File imageFile, ProcessingOperation operation) async {
+  // Check file existence, size (max 10MB), format (JPG/PNG/WebP)
+  // Special Reimagine validation: max 5MB (for 1024x1024px limit)
+}
+```
+
+**Enhanced Reimagine Method**:
+```dart
+Future<Uint8List> reimagine(File imageFile) async {
+  print('=== REIMAGINE DEBUG START ===');
+  // Detailed logging and specific error messages
+  // Differentiate 401/402/400 errors with clear explanations
+}
+```
+
 **Enhanced Error Handling**:
 ```dart
 // Enhanced logging for debugging
