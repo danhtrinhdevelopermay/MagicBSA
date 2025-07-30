@@ -16,6 +16,13 @@ Focus on practical, working solutions over theoretical explanations.
 
 ## Recent Changes (July 30, 2025)
 
+✓ **FIXED MASK DRAWING CANVAS ISSUE** - Resolved critical "100% ảnh sẽ bị xóa" error when user draws small mask strokes:
+  - Created separate mask-only canvas using PictureRecorder without background contamination
+  - Fixed canvas capture to render only white strokes on transparent background, not entire background image
+  - Improved detection logic: white pixel validation with RGB+alpha channels for precise stroke detection
+  - Relaxed safety threshold from 50% to 80% as new logic is much more accurate
+  - Eliminated background pollution that caused false 100% detection
+  - Created MASK_DRAWING_CANVAS_FIX.md with comprehensive solution documentation
 ✓ **FIXED CRITICAL APK BUILD COMPILATION ERRORS** - Resolved GitHub Actions APK build failure caused by compilation errors in mask_drawing_screen.dart:
   - Fixed ColorUint8.gray not found error by replacing with ColorRgb8(0, 0, 0)
   - Fixed variable name conflict: renamed pngBytes to canvasPngBytes/maskPngBytes
