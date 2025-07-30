@@ -276,8 +276,8 @@ class _MainScreenState extends State<MainScreen> {
       ),
       child: SafeArea(
         child: Container(
-          height: 70,
-          padding: const EdgeInsets.only(top: 8, bottom: 8),
+          height: 60,
+          padding: const EdgeInsets.only(top: 4, bottom: 4),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
@@ -327,7 +327,7 @@ class _MainScreenState extends State<MainScreen> {
       onTap: onTap,
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 200),
-        padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 16),
+        padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 12),
         decoration: BoxDecoration(
           color: isActive ? const Color(0xFF6366f1).withOpacity(0.1) : Colors.transparent,
           borderRadius: BorderRadius.circular(20),
@@ -344,7 +344,7 @@ class _MainScreenState extends State<MainScreen> {
                 size: 24,
               ),
             ),
-            const SizedBox(height: 4),
+            const SizedBox(height: 2),
             AnimatedDefaultTextStyle(
               duration: const Duration(milliseconds: 200),
               style: TextStyle(
