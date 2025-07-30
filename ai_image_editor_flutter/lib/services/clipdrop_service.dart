@@ -1,7 +1,9 @@
 import 'dart:io';
 import 'dart:typed_data';
+import 'dart:math';
 import 'package:dio/dio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:image/image.dart' as img;
 
 enum ProcessingOperation {
   removeBackground,
@@ -154,6 +156,9 @@ class ClipDropService {
     // Validate image file before processing
     await _validateImageFile(imageFile, operation);
     
+    // Auto-resize image if needed based on operation limits
+    final processedImageFile = await _resizeImageForOperation(imageFile, operation);
+    
     // Reload API keys if not initialized
     if (_currentApiKey.isEmpty) {
       await _loadApiKeys();
@@ -203,8 +208,8 @@ class ClipDropService {
 
       final formData = FormData.fromMap({
         'image_file': await MultipartFile.fromFile(
-          imageFile.path,
-          filename: 'image.${imageFile.path.split('.').last}',
+          processedImageFile.path,
+          filename: 'image.${processedImageFile.path.split('.').last}',
         ),
       });
 
@@ -212,10 +217,12 @@ class ClipDropService {
       switch (operation) {
         case ProcessingOperation.cleanup:
           if (maskFile != null) {
+            // Resize mask file to match processed image dimensions if needed
+            final resizedMaskFile = await _resizeImageForOperation(maskFile, operation);
             formData.files.add(MapEntry(
               'mask_file',
               await MultipartFile.fromFile(
-                maskFile.path,
+                resizedMaskFile.path,
                 filename: 'mask.png', // Force PNG extension for mask
               ),
             ));
@@ -248,11 +255,12 @@ class ClipDropService {
           
         case ProcessingOperation.replaceBackground:
           if (backgroundFile != null) {
+            final resizedBackgroundFile = await _resizeImageForOperation(backgroundFile, operation);
             formData.files.add(MapEntry(
               'background_file',
               await MultipartFile.fromFile(
-                backgroundFile.path,
-                filename: 'background.${backgroundFile.path.split('.').last}',
+                resizedBackgroundFile.path,
+                filename: 'background.${resizedBackgroundFile.path.split('.').last}',
               ),
             ));
           } else if (prompt != null) {
@@ -298,6 +306,16 @@ class ClipDropService {
         }
         if (consumedCredits != null) {
           print('Credits consumed: $consumedCredits');
+        }
+        
+        // Clean up temporary files
+        try {
+          if (processedImageFile.path != imageFile.path) {
+            await processedImageFile.delete();
+            print('Cleaned up resized image file');
+          }
+        } catch (e) {
+          print('Note: Could not clean up temporary file: $e');
         }
         
         return Uint8List.fromList(response.data);
@@ -443,18 +461,130 @@ class ClipDropService {
     _resetToPrimaryApi();
   }
 
-  // Validate image file before API call
+  // Auto-resize image to comply with API limits
+  Future<File> _resizeImageForOperation(File imageFile, ProcessingOperation operation) async {
+    final imageBytes = await imageFile.readAsBytes();
+    final originalImage = img.decodeImage(imageBytes);
+    
+    if (originalImage == null) {
+      throw Exception('Không thể đọc file ảnh. Vui lòng chọn ảnh khác.');
+    }
+    
+    int maxWidth, maxHeight;
+    String operationName;
+    
+    // Set limits based on operation according to Clipdrop documentation
+    switch (operation) {
+      case ProcessingOperation.removeBackground:
+        // 25 megapixels = 5000x5000 approximately
+        maxWidth = maxHeight = 5000;
+        operationName = 'Remove Background';
+        break;
+      case ProcessingOperation.cleanup:
+        // 16 megapixels = 4000x4000 approximately
+        maxWidth = maxHeight = 4000;
+        operationName = 'Cleanup';
+        break;
+      case ProcessingOperation.uncrop:
+        // 10 megapixels = 3162x3162 approximately
+        maxWidth = maxHeight = 3162;
+        operationName = 'Uncrop';
+        break;
+      case ProcessingOperation.reimagine:
+      case ProcessingOperation.replaceBackground:
+      case ProcessingOperation.productPhotography:
+        // 1024x1024 for these APIs
+        maxWidth = maxHeight = 1024;
+        operationName = operation.toString().split('.').last;
+        break;
+      default:
+        // Conservative default
+        maxWidth = maxHeight = 1024;
+        operationName = operation.toString().split('.').last;
+        break;
+    }
+    
+    final originalWidth = originalImage.width;
+    final originalHeight = originalImage.height;
+    
+    print('Original image: ${originalWidth}x${originalHeight}');
+    print('Max allowed for $operationName: ${maxWidth}x${maxHeight}');
+    
+    // Check if resize is needed
+    if (originalWidth <= maxWidth && originalHeight <= maxHeight) {
+      print('Image size OK, no resize needed');
+      return imageFile;
+    }
+    
+    // Calculate new dimensions maintaining aspect ratio
+    final aspectRatio = originalWidth / originalHeight;
+    int newWidth, newHeight;
+    
+    if (aspectRatio > 1) {
+      // Landscape
+      newWidth = maxWidth;
+      newHeight = (maxWidth / aspectRatio).round();
+      if (newHeight > maxHeight) {
+        newHeight = maxHeight;
+        newWidth = (maxHeight * aspectRatio).round();
+      }
+    } else {
+      // Portrait or square
+      newHeight = maxHeight;
+      newWidth = (maxHeight * aspectRatio).round();
+      if (newWidth > maxWidth) {
+        newWidth = maxWidth;
+        newHeight = (maxWidth / aspectRatio).round();
+      }
+    }
+    
+    print('Resizing to: ${newWidth}x${newHeight}');
+    
+    // Resize image
+    final resizedImage = img.copyResize(
+      originalImage,
+      width: newWidth,
+      height: newHeight,
+      interpolation: img.Interpolation.cubic,
+    );
+    
+    // Save resized image to temporary file
+    final extension = imageFile.path.toLowerCase().split('.').last;
+    final tempDir = Directory.systemTemp;
+    final tempFile = File('${tempDir.path}/resized_${DateTime.now().millisecondsSinceEpoch}.$extension');
+    
+    Uint8List encodedImage;
+    switch (extension) {
+      case 'png':
+        encodedImage = Uint8List.fromList(img.encodePng(resizedImage));
+        break;
+      case 'webp':
+        encodedImage = Uint8List.fromList(img.encodeWebP(resizedImage));
+        break;
+      default: // jpg, jpeg
+        encodedImage = Uint8List.fromList(img.encodeJpg(resizedImage, quality: 85));
+        break;
+    }
+    
+    await tempFile.writeAsBytes(encodedImage);
+    print('Resized image saved: ${tempFile.path}');
+    print('New file size: ${(await tempFile.length() / 1024 / 1024).toStringAsFixed(2)}MB');
+    
+    return tempFile;
+  }
+
+  // Validate image file before API call (basic checks only)
   Future<void> _validateImageFile(File imageFile, ProcessingOperation operation) async {
     // Check if file exists
     if (!await imageFile.exists()) {
       throw Exception('File ảnh không tồn tại. Vui lòng chọn ảnh khác.');
     }
     
-    // Check file size (max 10MB for most APIs)
+    // Check file size (max 30MB as per Clipdrop docs)
     final fileSize = await imageFile.length();
-    const maxSize = 10 * 1024 * 1024; // 10MB
+    const maxSize = 30 * 1024 * 1024; // 30MB
     if (fileSize > maxSize) {
-      throw Exception('File ảnh quá lớn (${(fileSize / 1024 / 1024).toStringAsFixed(1)}MB). Tối đa 10MB.');
+      throw Exception('File ảnh quá lớn (${(fileSize / 1024 / 1024).toStringAsFixed(1)}MB). Tối đa 30MB.');
     }
     
     // Check file extension
@@ -464,18 +594,7 @@ class ClipDropService {
       throw Exception('Định dạng ảnh không hỗ trợ ($extension). Chỉ hỗ trợ: JPG, PNG, WebP.');
     }
     
-    // Special validation for Reimagine API (max 1024x1024)
-    if (operation == ProcessingOperation.reimagine) {
-      // For Reimagine, we need to check image dimensions more strictly
-      print('Applying Reimagine-specific validation (max 1024x1024px)');
-      // Note: Actual image dimension check would require image package
-      // For now, we rely on file size as a proxy
-      if (fileSize > 5 * 1024 * 1024) { // 5MB for Reimagine is conservative
-        throw Exception('Ảnh quá lớn cho Reimagine (${(fileSize / 1024 / 1024).toStringAsFixed(1)}MB). Vui lòng resize xuống dưới 1024x1024px và dưới 5MB.');
-      }
-    }
-    
-    print('Image validation passed: ${imageFile.path}');
+    print('Basic validation passed: ${imageFile.path}');
     print('File size: ${(fileSize / 1024 / 1024).toStringAsFixed(2)}MB');
     print('Extension: $extension');
     print('Operation: $operation');
