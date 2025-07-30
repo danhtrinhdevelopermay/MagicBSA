@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 import '../providers/image_provider.dart';
 import '../widgets/image_upload_widget.dart';
 import '../widgets/enhanced_editor_widget.dart';
-import '../widgets/processing_widget.dart';
+
 import '../widgets/result_widget.dart';
 import '../widgets/bottom_navigation_widget.dart';
 import '../widgets/loading_overlay_widget.dart';
@@ -116,7 +116,7 @@ class HomeScreen extends StatelessWidget {
           ),
           const SizedBox(width: 12),
           const Text(
-            'Photo Magic',
+            'TwinkBSA',
             style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.w600,
@@ -148,10 +148,7 @@ class HomeScreen extends StatelessWidget {
         }
         break;
       case ProcessingState.processing:
-        return ProcessingWidget(
-          operation: provider.currentOperation,
-          progress: provider.progress,
-        );
+        return const ImageUploadWidget(); // Return to upload widget, LoadingOverlay will handle processing display
       case ProcessingState.error:
         return _buildErrorState(context, provider);
       default:

@@ -33,35 +33,145 @@ class _ResultWidgetState extends State<ResultWidget> {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(20),
       child: Column(
         children: [
+          const SizedBox(height: 32),
+          
+          // Success header with animation
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.all(24),
+            decoration: BoxDecoration(
+              gradient: const LinearGradient(
+                colors: [Color(0xFF10b981), Color(0xFF059669)],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
+              borderRadius: BorderRadius.circular(20),
+              boxShadow: [
+                BoxShadow(
+                  color: const Color(0xFF10b981).withOpacity(0.3),
+                  blurRadius: 20,
+                  offset: const Offset(0, 8),
+                ),
+              ],
+            ),
+            child: Row(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: Colors.white.withOpacity(0.2),
+                    borderRadius: BorderRadius.circular(50),
+                  ),
+                  child: const Icon(
+                    Icons.check_circle_rounded,
+                    color: Colors.white,
+                    size: 32,
+                  ),
+                ),
+                const SizedBox(width: 16),
+                const Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Xử lý hoàn thành!',
+                        style: TextStyle(
+                          fontSize: 22,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
+                      ),
+                      SizedBox(height: 4),
+                      Text(
+                        'Ảnh của bạn đã được chỉnh sửa thành công',
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: Colors.white70,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+          
           const SizedBox(height: 24),
           
-          // Header with toggle
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              const Text(
-                'Kết quả',
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  color: Color(0xFF1e293b),
-                ),
+          // Toggle comparison controls
+          if (widget.originalImage != null)
+            Container(
+              padding: const EdgeInsets.all(4),
+              decoration: BoxDecoration(
+                color: const Color(0xFFf1f5f9),
+                borderRadius: BorderRadius.circular(16),
               ),
-              if (widget.originalImage != null) // Only show comparison toggle if we have original image
-                TextButton.icon(
-                  onPressed: () {
-                    setState(() {
-                      _showComparison = !_showComparison;
-                    });
-                  },
-                  icon: const Icon(Icons.compare_arrows),
-                  label: Text(_showComparison ? 'Chỉ kết quả' : 'So sánh'),
-                ),
-            ],
-          ),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: GestureDetector(
+                      onTap: () => setState(() => _showComparison = false),
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(vertical: 12),
+                        decoration: BoxDecoration(
+                          color: !_showComparison ? Colors.white : Colors.transparent,
+                          borderRadius: BorderRadius.circular(12),
+                          boxShadow: !_showComparison
+                              ? [
+                                  BoxShadow(
+                                    color: Colors.black.withOpacity(0.1),
+                                    blurRadius: 8,
+                                    offset: const Offset(0, 2),
+                                  ),
+                                ]
+                              : null,
+                        ),
+                        child: Text(
+                          'Kết quả',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontWeight: FontWeight.w600,
+                            color: !_showComparison ? const Color(0xFF6366f1) : const Color(0xFF64748b),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    child: GestureDetector(
+                      onTap: () => setState(() => _showComparison = true),
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(vertical: 12),
+                        decoration: BoxDecoration(
+                          color: _showComparison ? Colors.white : Colors.transparent,
+                          borderRadius: BorderRadius.circular(12),
+                          boxShadow: _showComparison
+                              ? [
+                                  BoxShadow(
+                                    color: Colors.black.withOpacity(0.1),
+                                    blurRadius: 8,
+                                    offset: const Offset(0, 2),
+                                  ),
+                                ]
+                              : null,
+                        ),
+                        child: Text(
+                          'So sánh',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontWeight: FontWeight.w600,
+                            color: _showComparison ? const Color(0xFF6366f1) : const Color(0xFF64748b),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
           
           const SizedBox(height: 16),
           
@@ -144,81 +254,160 @@ class _ResultWidgetState extends State<ResultWidget> {
           
           const SizedBox(height: 24),
           
-          // Action buttons
+          // Action buttons with modern design
           Column(
             children: [
-              // Download button
-              SizedBox(
+              // Primary download button with gradient
+              Container(
                 width: double.infinity,
-                height: 50,
-                child: ElevatedButton(
-                  onPressed: _saveImage,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFFf59e0b),
-                    foregroundColor: Colors.white,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    elevation: 2,
+                height: 56,
+                decoration: BoxDecoration(
+                  gradient: const LinearGradient(
+                    colors: [Color(0xFFf59e0b), Color(0xFFd97706)],
+                    begin: Alignment.centerLeft,
+                    end: Alignment.centerRight,
                   ),
-                  child: const Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(Icons.download),
-                      SizedBox(width: 8),
-                      Text(
-                        'Tải về',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600,
-                        ),
+                  borderRadius: BorderRadius.circular(16),
+                  boxShadow: [
+                    BoxShadow(
+                      color: const Color(0xFFf59e0b).withOpacity(0.3),
+                      blurRadius: 12,
+                      offset: const Offset(0, 4),
+                    ),
+                  ],
+                ),
+                child: Material(
+                  color: Colors.transparent,
+                  borderRadius: BorderRadius.circular(16),
+                  child: InkWell(
+                    onTap: _saveImage,
+                    borderRadius: BorderRadius.circular(16),
+                    child: const Center(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.download_rounded,
+                            color: Colors.white,
+                            size: 24,
+                          ),
+                          SizedBox(width: 12),
+                          Text(
+                            'Tải về',
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ],
                       ),
-                    ],
+                    ),
                   ),
                 ),
               ),
               
-              const SizedBox(height: 12),
+              const SizedBox(height: 16),
               
-              // Secondary actions
+              // Secondary actions with modern cards
               Row(
                 children: [
                   Expanded(
-                    child: OutlinedButton(
-                      onPressed: _shareImage,
-                      style: OutlinedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(vertical: 12),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
+                    child: Container(
+                      height: 48,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(14),
+                        border: Border.all(
+                          color: const Color(0xFF6366f1).withOpacity(0.2),
+                          width: 1.5,
                         ),
-                      ),
-                      child: const Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(Icons.share),
-                          SizedBox(width: 4),
-                          Text('Chia sẻ'),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.04),
+                            blurRadius: 8,
+                            offset: const Offset(0, 2),
+                          ),
                         ],
+                      ),
+                      child: Material(
+                        color: Colors.transparent,
+                        borderRadius: BorderRadius.circular(14),
+                        child: InkWell(
+                          onTap: _shareImage,
+                          borderRadius: BorderRadius.circular(14),
+                          child: const Center(
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  Icons.share_rounded,
+                                  color: Color(0xFF6366f1),
+                                  size: 20,
+                                ),
+                                SizedBox(width: 8),
+                                Text(
+                                  'Chia sẻ',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w600,
+                                    color: Color(0xFF6366f1),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
                       ),
                     ),
                   ),
                   const SizedBox(width: 12),
                   Expanded(
-                    child: OutlinedButton(
-                      onPressed: widget.onStartOver,
-                      style: OutlinedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(vertical: 12),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
+                    child: Container(
+                      height: 48,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(14),
+                        border: Border.all(
+                          color: const Color(0xFF64748b).withOpacity(0.2),
+                          width: 1.5,
                         ),
-                      ),
-                      child: const Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(Icons.edit),
-                          SizedBox(width: 4),
-                          Text('Chỉnh sửa thêm'),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.04),
+                            blurRadius: 8,
+                            offset: const Offset(0, 2),
+                          ),
                         ],
+                      ),
+                      child: Material(
+                        color: Colors.transparent,
+                        borderRadius: BorderRadius.circular(14),
+                        child: InkWell(
+                          onTap: widget.onStartOver,
+                          borderRadius: BorderRadius.circular(14),
+                          child: const Center(
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  Icons.refresh_rounded,
+                                  color: Color(0xFF64748b),
+                                  size: 20,
+                                ),
+                                SizedBox(width: 8),
+                                Text(
+                                  'Thử lại',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w600,
+                                    color: Color(0xFF64748b),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
                       ),
                     ),
                   ),

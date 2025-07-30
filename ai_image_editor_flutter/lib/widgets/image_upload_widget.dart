@@ -12,26 +12,63 @@ class ImageUploadWidget extends StatelessWidget {
     final provider = Provider.of<ImageEditProvider>(context);
 
     return SingleChildScrollView(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(20),
       child: Column(
         children: [
-          const SizedBox(height: 24),
+          const SizedBox(height: 32),
           
-          // Title and description
-          const Text(
-            'Xóa Background & Đối Tượng',
-            style: TextStyle(
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
-              color: Color(0xFF1e293b),
+          // Header with gradient background
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.all(24),
+            decoration: BoxDecoration(
+              gradient: const LinearGradient(
+                colors: [Color(0xFF6366f1), Color(0xFF8b5cf6)],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
+              borderRadius: BorderRadius.circular(20),
+              boxShadow: [
+                BoxShadow(
+                  color: const Color(0xFF6366f1).withOpacity(0.3),
+                  blurRadius: 20,
+                  offset: const Offset(0, 8),
+                ),
+              ],
             ),
-          ),
-          const SizedBox(height: 8),
-          const Text(
-            'Tải ảnh lên và để AI làm phép màu',
-            style: TextStyle(
-              fontSize: 14,
-              color: Color(0xFF64748b),
+            child: Column(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: Colors.white.withOpacity(0.2),
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  child: const Icon(
+                    Icons.auto_awesome,
+                    color: Colors.white,
+                    size: 32,
+                  ),
+                ),
+                const SizedBox(height: 16),
+                const Text(
+                  'AI Image Editor',
+                  style: TextStyle(
+                    fontSize: 28,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  'Tạo và chỉnh sửa ảnh với công nghệ AI tiên tiến',
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: Colors.white.withOpacity(0.9),
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ],
             ),
           ),
           const SizedBox(height: 32),
@@ -61,76 +98,139 @@ class ImageUploadWidget extends StatelessWidget {
           
           const SizedBox(height: 24),
 
-          // Upload area
+          // Upload area with modern glass morphism design
           Container(
-            margin: const EdgeInsets.only(bottom: 24),
+            margin: const EdgeInsets.only(bottom: 32),
             decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(16),
+              gradient: LinearGradient(
+                colors: [
+                  Colors.white.withOpacity(0.9),
+                  Colors.white.withOpacity(0.7),
+                ],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
+              borderRadius: BorderRadius.circular(24),
+              border: Border.all(
+                color: Colors.white.withOpacity(0.5),
+                width: 1.5,
+              ),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.05),
-                  blurRadius: 10,
-                  offset: const Offset(0, 2),
+                  color: Colors.black.withOpacity(0.08),
+                  blurRadius: 24,
+                  offset: const Offset(0, 8),
+                  spreadRadius: 0,
+                ),
+                BoxShadow(
+                  color: const Color(0xFF6366f1).withOpacity(0.1),
+                  blurRadius: 40,
+                  offset: const Offset(0, 16),
                 ),
               ],
             ),
             child: Material(
               color: Colors.transparent,
-              borderRadius: BorderRadius.circular(16),
+              borderRadius: BorderRadius.circular(24),
               child: InkWell(
                 onTap: () => _showImageSourceDialog(context, provider),
-                borderRadius: BorderRadius.circular(16),
+                borderRadius: BorderRadius.circular(24),
                 child: Container(
-                  padding: const EdgeInsets.all(32),
+                  padding: const EdgeInsets.all(40),
                   child: Column(
                     children: [
+                      // Animated upload icon with gradient
                       Container(
-                        width: 80,
-                        height: 80,
+                        width: 100,
+                        height: 100,
                         decoration: BoxDecoration(
-                          color: const Color(0xFF6366f1).withOpacity(0.1),
-                          borderRadius: BorderRadius.circular(40),
+                          gradient: const LinearGradient(
+                            colors: [Color(0xFF6366f1), Color(0xFF8b5cf6)],
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                          ),
+                          borderRadius: BorderRadius.circular(50),
+                          boxShadow: [
+                            BoxShadow(
+                              color: const Color(0xFF6366f1).withOpacity(0.4),
+                              blurRadius: 20,
+                              offset: const Offset(0, 8),
+                            ),
+                          ],
                         ),
                         child: const Icon(
-                          Icons.cloud_upload_outlined,
-                          color: Color(0xFF6366f1),
-                          size: 40,
+                          Icons.cloud_upload_rounded,
+                          color: Colors.white,
+                          size: 48,
                         ),
                       ),
-                      const SizedBox(height: 16),
+                      const SizedBox(height: 24),
                       const Text(
-                        'Tải Ảnh Lên',
+                        'Kéo thả hoặc chọn ảnh',
                         style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w600,
+                          fontSize: 22,
+                          fontWeight: FontWeight.bold,
                           color: Color(0xFF1e293b),
                         ),
                       ),
-                      const SizedBox(height: 8),
-                      const Text(
-                        'Hỗ trợ JPG, PNG, WEBP tối đa 10MB',
-                        style: TextStyle(
-                          fontSize: 13,
-                          color: Color(0xFF64748b),
-                        ),
-                      ),
-                      const SizedBox(height: 16),
+                      const SizedBox(height: 12),
                       Container(
                         padding: const EdgeInsets.symmetric(
-                          horizontal: 24,
-                          vertical: 12,
+                          horizontal: 16,
+                          vertical: 8,
                         ),
                         decoration: BoxDecoration(
-                          color: const Color(0xFF6366f1),
-                          borderRadius: BorderRadius.circular(8),
+                          color: const Color(0xFF6366f1).withOpacity(0.1),
+                          borderRadius: BorderRadius.circular(20),
                         ),
                         child: const Text(
-                          'Chọn Ảnh',
+                          'JPG, PNG, WEBP • Tối đa 10MB',
                           style: TextStyle(
-                            color: Colors.white,
+                            fontSize: 14,
+                            color: Color(0xFF6366f1),
                             fontWeight: FontWeight.w500,
                           ),
+                        ),
+                      ),
+                      const SizedBox(height: 24),
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 32,
+                          vertical: 16,
+                        ),
+                        decoration: BoxDecoration(
+                          gradient: const LinearGradient(
+                            colors: [Color(0xFF6366f1), Color(0xFF8b5cf6)],
+                            begin: Alignment.centerLeft,
+                            end: Alignment.centerRight,
+                          ),
+                          borderRadius: BorderRadius.circular(16),
+                          boxShadow: [
+                            BoxShadow(
+                              color: const Color(0xFF6366f1).withOpacity(0.3),
+                              blurRadius: 12,
+                              offset: const Offset(0, 4),
+                            ),
+                          ],
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            const Icon(
+                              Icons.add_photo_alternate_rounded,
+                              color: Colors.white,
+                              size: 20,
+                            ),
+                            const SizedBox(width: 8),
+                            const Text(
+                              'Chọn Ảnh',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w600,
+                                fontSize: 16,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                     ],
