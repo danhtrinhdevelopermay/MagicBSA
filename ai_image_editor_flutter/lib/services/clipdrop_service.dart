@@ -559,7 +559,8 @@ class ClipDropService {
         encodedImage = Uint8List.fromList(img.encodePng(resizedImage));
         break;
       case 'webp':
-        encodedImage = Uint8List.fromList(img.encodeWebP(resizedImage));
+        // WebP encoding not available in current image package version, use PNG instead
+        encodedImage = Uint8List.fromList(img.encodePng(resizedImage));
         break;
       default: // jpg, jpeg
         encodedImage = Uint8List.fromList(img.encodeJpg(resizedImage, quality: 85));
