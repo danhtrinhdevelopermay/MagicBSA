@@ -263,53 +263,66 @@ class _MainScreenState extends State<MainScreen> {
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
-        border: const Border(
-          top: BorderSide(color: Color(0xFFe2e8f0), width: 1),
+        borderRadius: const BorderRadius.only(
+          topLeft: Radius.circular(24),
+          topRight: Radius.circular(24),
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.1),
-            blurRadius: 10,
-            offset: const Offset(0, -2),
+            color: Colors.black.withOpacity(0.08),
+            blurRadius: 20,
+            offset: const Offset(0, -4),
+            spreadRadius: 0,
+          ),
+          BoxShadow(
+            color: const Color(0xFF6366f1).withOpacity(0.1),
+            blurRadius: 40,
+            offset: const Offset(0, -8),
           ),
         ],
       ),
-      child: SafeArea(
-        child: Container(
-          height: 60,
-          padding: const EdgeInsets.only(top: 4, bottom: 4),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              _buildNavItem(
-                icon: Icons.home_outlined,
-                activeIcon: Icons.home,
-                label: 'Trang chủ',
-                isActive: _currentIndex == 0,
-                onTap: () => _onTabTapped(0),
-              ),
-              _buildNavItem(
-                icon: Icons.history_outlined,
-                activeIcon: Icons.history,
-                label: 'Lịch sử',
-                isActive: _currentIndex == 1,
-                onTap: () => _onTabTapped(1),
-              ),
-              _buildNavItem(
-                icon: Icons.star_border,
-                activeIcon: Icons.star,
-                label: 'Premium',
-                isActive: _currentIndex == 2,
-                onTap: () => _onTabTapped(2),
-              ),
-              _buildNavItem(
-                icon: Icons.person_outline,
-                activeIcon: Icons.person,
-                label: 'Hồ sơ',
-                isActive: _currentIndex == 3,
-                onTap: () => _onTabTapped(3),
-              ),
-            ],
+      child: ClipRRect(
+        borderRadius: const BorderRadius.only(
+          topLeft: Radius.circular(24),
+          topRight: Radius.circular(24),
+        ),
+        child: SafeArea(
+          child: Container(
+            height: 70,
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                _buildNavItem(
+                  icon: Icons.home_outlined,
+                  activeIcon: Icons.home,
+                  label: 'Trang chủ',
+                  isActive: _currentIndex == 0,
+                  onTap: () => _onTabTapped(0),
+                ),
+                _buildNavItem(
+                  icon: Icons.history_outlined,
+                  activeIcon: Icons.history,
+                  label: 'Lịch sử',
+                  isActive: _currentIndex == 1,
+                  onTap: () => _onTabTapped(1),
+                ),
+                _buildNavItem(
+                  icon: Icons.star_border,
+                  activeIcon: Icons.star,
+                  label: 'Premium',
+                  isActive: _currentIndex == 2,
+                  onTap: () => _onTabTapped(2),
+                ),
+                _buildNavItem(
+                  icon: Icons.person_outline,
+                  activeIcon: Icons.person,
+                  label: 'Hồ sơ',
+                  isActive: _currentIndex == 3,
+                  onTap: () => _onTabTapped(3),
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -325,45 +338,115 @@ class _MainScreenState extends State<MainScreen> {
   }) {
     return GestureDetector(
       onTap: onTap,
+      behavior: HitTestBehavior.opaque,
       child: AnimatedContainer(
-        duration: const Duration(milliseconds: 200),
-        padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 12),
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeInOutCubic,
+        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
         decoration: BoxDecoration(
-          color: isActive ? const Color(0xFF6366f1).withOpacity(0.1) : Colors.transparent,
-          borderRadius: BorderRadius.circular(20),
+          gradient: isActive
+              ? LinearGradient(
+                  colors: [
+                    const Color(0xFF6366f1).withOpacity(0.15),
+                    const Color(0xFF8b5cf6).withOpacity(0.1),
+                  ],
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                )
+              : null,
+          borderRadius: BorderRadius.circular(24),
+          boxShadow: isActive
+              ? [
+                  BoxShadow(
+                    color: const Color(0xFF6366f1).withOpacity(0.2),
+                    blurRadius: 8,
+                    offset: const Offset(0, 2),
+                  ),
+                ]
+              : null,
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            AnimatedSwitcher(
-              duration: const Duration(milliseconds: 200),
-              child: Icon(
-                isActive ? activeIcon : icon,
-                key: ValueKey(isActive),
-                color: isActive ? const Color(0xFF6366f1) : const Color(0xFF94a3b8),
-                size: 24,
-              ),
-            ),
-            const SizedBox(height: 2),
-            AnimatedDefaultTextStyle(
-              duration: const Duration(milliseconds: 200),
-              style: TextStyle(
-                fontSize: 12,
-                fontWeight: isActive ? FontWeight.w600 : FontWeight.w500,
-                color: isActive ? const Color(0xFF6366f1) : const Color(0xFF64748b),
-              ),
-              child: Text(label),
-            ),
-            if (isActive)
-              Container(
-                margin: const EdgeInsets.only(top: 2),
-                height: 2,
-                width: 20,
-                decoration: BoxDecoration(
-                  color: const Color(0xFF6366f1),
-                  borderRadius: BorderRadius.circular(1),
+            AnimatedContainer(
+              duration: const Duration(milliseconds: 300),
+              curve: Curves.elasticOut,
+              transform: Matrix4.identity()
+                ..scale(isActive ? 1.1 : 1.0),
+              child: AnimatedSwitcher(
+                duration: const Duration(milliseconds: 250),
+                switchInCurve: Curves.easeInOutBack,
+                switchOutCurve: Curves.easeInOutBack,
+                transitionBuilder: (child, animation) {
+                  return ScaleTransition(
+                    scale: animation,
+                    child: RotationTransition(
+                      turns: animation,
+                      child: child,
+                    ),
+                  );
+                },
+                child: Container(
+                  key: ValueKey(isActive),
+                  padding: const EdgeInsets.all(6),
+                  decoration: BoxDecoration(
+                    color: isActive ? const Color(0xFF6366f1) : Colors.transparent,
+                    borderRadius: BorderRadius.circular(16),
+                    boxShadow: isActive
+                        ? [
+                            BoxShadow(
+                              color: const Color(0xFF6366f1).withOpacity(0.3),
+                              blurRadius: 12,
+                              offset: const Offset(0, 4),
+                            ),
+                          ]
+                        : null,
+                  ),
+                  child: Icon(
+                    isActive ? activeIcon : icon,
+                    color: isActive ? Colors.white : const Color(0xFF94a3b8),
+                    size: 22,
+                  ),
                 ),
               ),
+            ),
+            const SizedBox(height: 4),
+            AnimatedDefaultTextStyle(
+              duration: const Duration(milliseconds: 300),
+              curve: Curves.easeInOut,
+              style: TextStyle(
+                fontSize: isActive ? 12 : 11,
+                fontWeight: isActive ? FontWeight.w700 : FontWeight.w500,
+                color: isActive ? const Color(0xFF6366f1) : const Color(0xFF64748b),
+                letterSpacing: isActive ? 0.5 : 0,
+              ),
+              child: AnimatedSlide(
+                duration: const Duration(milliseconds: 300),
+                curve: Curves.elasticOut,
+                offset: isActive ? Offset.zero : const Offset(0, 0.1),
+                child: Text(
+                  label,
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            ),
+            AnimatedContainer(
+              duration: const Duration(milliseconds: 400),
+              curve: Curves.elasticOut,
+              margin: const EdgeInsets.only(top: 2),
+              height: isActive ? 3 : 0,
+              width: isActive ? 24 : 0,
+              decoration: BoxDecoration(
+                gradient: isActive
+                    ? const LinearGradient(
+                        colors: [Color(0xFF6366f1), Color(0xFF8b5cf6)],
+                        begin: Alignment.centerLeft,
+                        end: Alignment.centerRight,
+                      )
+                    : null,
+                borderRadius: BorderRadius.circular(2),
+              ),
+            ),
           ],
         ),
       ),
