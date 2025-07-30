@@ -16,6 +16,13 @@ Focus on practical, working solutions over theoretical explanations.
 
 ## Recent Changes (July 30, 2025)
 
+✓ **FIXED CRITICAL APK BUILD COMPILATION ERRORS** - Resolved GitHub Actions APK build failure caused by compilation errors in mask_drawing_screen.dart:
+  - Fixed ColorUint8.gray not found error by replacing with ColorRgb8(0, 0, 0)
+  - Fixed variable name conflict: renamed pngBytes to canvasPngBytes/maskPngBytes
+  - Updated image format from grayscale (1 channel) to RGB (3 channels) for better compatibility
+  - Fixed setPixelGray to setPixelRgb for RGB image format compliance
+  - Zero compilation errors - APK build now ready for GitHub Actions deployment
+  - Created APK_BUILD_COMPILATION_FIX.md with comprehensive fix documentation
 ✓ **FIXED CLIPDROP CLEANUP 400 ERROR** - Resolved API bad request by implementing correct mask dimensions and format:
   - Fixed mask creation to match original image dimensions using img.copyResize()
   - Implemented proper binary mask with black (0=keep) and white (255=remove) pixels
