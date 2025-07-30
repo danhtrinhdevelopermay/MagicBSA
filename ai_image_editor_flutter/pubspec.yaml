@@ -63,6 +63,9 @@ dependencies:
   
   # Audio player
   audioplayers: ^5.2.1
+  
+  # Push notifications
+  onesignal_flutter: ^5.0.4
 
 dev_dependencies:
   flutter_test:

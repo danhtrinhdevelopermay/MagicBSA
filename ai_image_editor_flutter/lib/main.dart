@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'screens/splash_screen.dart';
 import 'providers/image_provider.dart';
 import 'services/audio_service.dart';
+import 'services/onesignal_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -13,6 +14,9 @@ void main() async {
   
   // Start background music automatically
   await AudioService().playBackgroundMusic();
+  
+  // Initialize OneSignal push notifications
+  await OneSignalService.initialize();
   
   // Set transparent system bars with proper edge-to-edge
   SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(

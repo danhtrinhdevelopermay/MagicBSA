@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../services/onesignal_service.dart';
 import 'package:flutter/services.dart';
 import 'settings_screen.dart';
 
@@ -303,8 +304,8 @@ class ProfileScreen extends StatelessWidget {
       {
         'icon': Icons.notifications_outlined,
         'title': 'Thông báo',
-        'subtitle': 'Cài đặt thông báo và cảnh báo',
-        'onTap': () {},
+        'subtitle': 'Cài đặt thông báo đẩy và cảnh báo',
+        'onTap': () => _showNotificationSettings(context),
       },
       {
         'icon': Icons.security_outlined,
@@ -329,6 +330,12 @@ class ProfileScreen extends StatelessWidget {
             ),
           );
         },
+      },
+      {
+        'icon': Icons.notifications_outlined,
+        'title': 'Thông báo',
+        'subtitle': 'Cài đặt thông báo đẩy',
+        'onTap': () => _showNotificationSettings(context),
       },
       {
         'icon': Icons.help_outline,
@@ -435,6 +442,13 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 
+  void _showNotificationSettings(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) => _NotificationSettingsDialog(),
+    );
+  }
+
   void _showAboutDialog(BuildContext context) {
     showDialog(
       context: context,
@@ -491,5 +505,237 @@ class ProfileScreen extends StatelessWidget {
         ],
       ),
     );
+  }
+}
+
+class _NotificationSettingsDialog extends StatefulWidget {
+  @override
+  _NotificationSettingsDialogState createState() => _NotificationSettingsDialogState();
+}
+
+class _NotificationSettingsDialogState extends State<_NotificationSettingsDialog> {
+  bool _pushNotificationsEnabled = true;
+  bool _processingNotifications = true;
+  bool _promotionalNotifications = false;
+  bool _newsUpdates = true;
+  String? _oneSignalUserId;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadNotificationSettings();
+  }
+
+  Future<void> _loadNotificationSettings() async {
+    // Load OneSignal User ID
+    final userId = await OneSignalService.getUserId();
+    final hasPermission = await OneSignalService.hasNotificationPermission();
+    
+    setState(() {
+      _oneSignalUserId = userId;
+      _pushNotificationsEnabled = hasPermission;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16),
+      ),
+      title: Row(
+        children: [
+          Container(
+            width: 40,
+            height: 40,
+            decoration: BoxDecoration(
+              color: const Color(0xFF6366f1).withOpacity(0.1),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: const Icon(
+              Icons.notifications_outlined,
+              color: Color(0xFF6366f1),
+              size: 20,
+            ),
+          ),
+          const SizedBox(width: 12),
+          const Text('Cài đặt thông báo'),
+        ],
+      ),
+      content: Container(
+        width: double.maxFinite,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            // OneSignal Status
+            if (_oneSignalUserId != null)
+              Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFF0FDF4),
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(color: const Color(0xFF10B981).withOpacity(0.2)),
+                ),
+                child: Row(
+                  children: [
+                    const Icon(Icons.check_circle, color: Color(0xFF10B981), size: 20),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Text(
+                        'OneSignal đã được kích hoạt',
+                        style: TextStyle(
+                          color: const Color(0xFF065F46),
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            const SizedBox(height: 16),
+            
+            // Push Notifications Toggle
+            _buildNotificationToggle(
+              title: 'Thông báo đẩy',
+              subtitle: 'Nhận thông báo từ ứng dụng',
+              value: _pushNotificationsEnabled,
+              onChanged: (value) async {
+                await OneSignalService.setPushNotificationEnabled(value);
+                setState(() {
+                  _pushNotificationsEnabled = value;
+                });
+              },
+            ),
+            
+            const Divider(height: 24),
+            
+            // Processing Notifications
+            _buildNotificationToggle(
+              title: 'Thông báo xử lý ảnh',
+              subtitle: 'Thông báo khi ảnh được xử lý xong',
+              value: _processingNotifications,
+              onChanged: (value) {
+                setState(() {
+                  _processingNotifications = value;
+                });
+                _updateTags();
+              },
+            ),
+            
+            // Promotional Notifications
+            _buildNotificationToggle(
+              title: 'Thông báo khuyến mãi',
+              subtitle: 'Nhận thông báo về ưu đãi đặc biệt',
+              value: _promotionalNotifications,
+              onChanged: (value) {
+                setState(() {
+                  _promotionalNotifications = value;
+                });
+                _updateTags();
+              },
+            ),
+            
+            // News Updates
+            _buildNotificationToggle(
+              title: 'Tin tức cập nhật',
+              subtitle: 'Thông báo về tính năng mới',
+              value: _newsUpdates,
+              onChanged: (value) {
+                setState(() {
+                  _newsUpdates = value;
+                });
+                _updateTags();
+              },
+            ),
+          ],
+        ),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.of(context).pop(),
+          child: const Text('Đóng'),
+        ),
+        ElevatedButton(
+          onPressed: () async {
+            // Send test notification
+            await OneSignalService.sendTestNotification();
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text('Đã gửi thông báo thử nghiệm'),
+                backgroundColor: Color(0xFF10B981),
+              ),
+            );
+          },
+          style: ElevatedButton.styleFrom(
+            backgroundColor: const Color(0xFF6366f1),
+            foregroundColor: Colors.white,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8),
+            ),
+          ),
+          child: const Text('Thử nghiệm'),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildNotificationToggle({
+    required String title,
+    required String subtitle,
+    required bool value,
+    required ValueChanged<bool> onChanged,
+  }) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 12),
+      child: Row(
+        children: [
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                    color: Color(0xFF1e293b),
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  subtitle,
+                  style: const TextStyle(
+                    fontSize: 14,
+                    color: Color(0xFF64748b),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Switch(
+            value: value,
+            onChanged: onChanged,
+            activeColor: const Color(0xFF6366f1),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _updateTags() {
+    final tags = <String, String>{};
+    
+    if (_processingNotifications) {
+      tags['processing_notifications'] = 'true';
+    }
+    if (_promotionalNotifications) {
+      tags['promotional_notifications'] = 'true';
+    }
+    if (_newsUpdates) {
+      tags['news_updates'] = 'true';
+    }
+    
+    OneSignalService.sendTags(tags);
   }
 }

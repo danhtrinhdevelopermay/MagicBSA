@@ -48,6 +48,16 @@ Focus on practical, working solutions over theoretical explanations.
   - Reduced item vertical padding from 6px to 2px to eliminate unnecessary spacing
   - Decreased icon-text spacing from 4px to 2px for more compact design
   - Bottom navigation now sits flush without extra white space above
+✓ **ADDED ONESIGNAL PUSH NOTIFICATIONS** - Integrated comprehensive push notification system:
+  - Added onesignal_flutter plugin (v5.3.4) for push notifications
+  - Created OneSignalService singleton for centralized notification management
+  - Added Android permissions for wake lock, vibrate, and notifications
+  - Implemented notification settings dialog in ProfileScreen with toggles
+  - Added user tagging system for processing, promotional, and news notifications
+  - Created notification handlers for foreground display and click actions
+  - Added deep linking support to navigate to specific screens from notifications
+  - Created comprehensive ONESIGNAL_SETUP_GUIDE.md with Firebase integration steps
+  - System automatically initializes OneSignal on app startup with permission requests
 
 ✓ **FIXED APK BUILD ERROR** - Resolved GitHub Actions APK build failure caused by XML namespace issue:
   - Fixed ic_launcher_foreground.xml with missing aapt namespace declaration
