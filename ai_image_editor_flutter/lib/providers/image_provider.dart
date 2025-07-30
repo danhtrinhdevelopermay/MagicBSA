@@ -148,6 +148,32 @@ class ImageEditProvider extends ChangeNotifier {
     await processImage(ProcessingOperation.cleanup, maskFile: maskFile);
   }
 
+  // Process image with mask - specifically for cleanup operations
+  Future<void> processImageWithMask(
+    ProcessingOperation operation, {
+    required File maskFile,
+  }) async {
+    if (_originalImage == null) return;
+    
+    try {
+      _currentOperation = 'Đang dọn dẹp đối tượng...';
+      _setState(ProcessingState.processing);
+      _startProgressAnimation();
+
+      final result = await _clipDropService.processImage(
+        _originalImage!, 
+        operation, 
+        maskFile: maskFile,
+      );
+      
+      _processedImage = result;
+      _setState(ProcessingState.completed);
+      _progress = 1.0;
+    } catch (e) {
+      _setError('Lỗi khi dọn dẹp ảnh: $e');
+    }
+  }
+
   // New ClipDrop API methods
   Future<void> uncrop({
     int? extendLeft,
