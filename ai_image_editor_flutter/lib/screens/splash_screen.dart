@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../widgets/audio_controls_widget.dart';
+import '../services/audio_service.dart';
 import 'main_screen.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -95,6 +96,9 @@ class _SplashScreenState extends State<SplashScreen>
   }
 
   void _startAnimations() async {
+    // Start background music when splash screen begins
+    await AudioService().playBackgroundMusic();
+    
     await Future.delayed(const Duration(milliseconds: 300));
     _logoController.forward();
     

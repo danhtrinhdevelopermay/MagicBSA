@@ -11,6 +11,9 @@ void main() async {
   // Initialize audio service
   await AudioService().initialize();
   
+  // Start background music automatically
+  await AudioService().playBackgroundMusic();
+  
   // Set transparent system bars with proper edge-to-edge
   SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
     statusBarColor: Colors.transparent,

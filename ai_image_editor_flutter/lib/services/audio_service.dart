@@ -28,15 +28,14 @@ class AudioService {
     if (_isPlaying || _isMuted) return;
     
     try {
-      // Placeholder for background music - user can replace with their own audio file
-       await _audioPlayer.play(AssetSource('audio/background_music.mp3'));
-      
-      // For now, we'll create a simple notification sound
+      // Try to play background music, if file doesn't exist, skip silently
+      await _audioPlayer.play(AssetSource('audio/background_music.mp3'));
       _isPlaying = true;
-      print('🎵 Background music would play here');
-      print('📁 Add your music file to: assets/audio/background_music.mp3');
+      print('🎵 Background music started playing');
     } catch (e) {
-      print('Error playing background music: $e');
+      // If audio file doesn't exist, set playing to false but don't show error
+      _isPlaying = false;
+      print('Audio file not found - add background_music.mp3 to assets/audio/ folder');
     }
   }
 
@@ -69,7 +68,12 @@ class AudioService {
     if (_isMuted) {
       await pauseBackgroundMusic();
     } else {
-      await resumeBackgroundMusic();
+      // Try to start background music if not playing and not muted
+      if (!_isPlaying) {
+        await playBackgroundMusic();
+      } else {
+        await resumeBackgroundMusic();
+      }
     }
   }
 
