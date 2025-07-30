@@ -83,19 +83,39 @@ class _MaskDrawingScreenState extends State<MaskDrawingScreen> {
         throw Exception('Không thể đọc ảnh gốc');
       }
 
-      // Get canvas render boundary
-      final RenderRepaintBoundary boundary = 
-          _canvasKey.currentContext!.findRenderObject() as RenderRepaintBoundary;
+      // Create a mask-only canvas without background image
+      final ui.PictureRecorder recorder = ui.PictureRecorder();
+      final Canvas maskCanvas = Canvas(recorder);
+      final Size canvasSize = Size(
+        MediaQuery.of(context).size.width - 32,
+        MediaQuery.of(context).size.width - 32,
+      );
       
-      // Capture the canvas as image
-      final ui.Image canvasImage = await boundary.toImage(pixelRatio: 1.0);
-      final ByteData? byteData = await canvasImage.toByteData(format: ui.ImageByteFormat.png);
+      // Draw ONLY mask strokes on transparent background
+      final maskPaint = Paint()
+        ..color = Colors.white // Use white for mask areas (will be detected)
+        ..strokeWidth = _brushSize
+        ..strokeCap = StrokeCap.round
+        ..style = PaintingStyle.stroke;
+
+      // Draw all completed paths as white strokes
+      for (final path in _paths) {
+        maskCanvas.drawPath(path, maskPaint);
+      }
+
+      // End recording and create image from mask-only canvas
+      final ui.Picture maskPicture = recorder.endRecording();
+      final ui.Image maskOnlyImage = await maskPicture.toImage(
+        canvasSize.width.toInt(),
+        canvasSize.height.toInt(),
+      );
       
+      final ByteData? byteData = await maskOnlyImage.toByteData(format: ui.ImageByteFormat.png);
       if (byteData == null) {
         throw Exception('Không thể tạo mask từ canvas');
       }
 
-      // Convert canvas to mask format
+      // Convert to image package format
       final Uint8List canvasPngBytes = byteData.buffer.asUint8List();
       final img.Image? canvasMask = img.decodePng(canvasPngBytes);
       
@@ -129,16 +149,26 @@ class _MaskDrawingScreenState extends State<MaskDrawingScreen> {
       for (int y = 0; y < originalImg.height; y++) {
         for (int x = 0; x < originalImg.width; x++) {
           final pixel = resizedCanvasMask.getPixel(x, y);
+          
+          // Check if this is a drawn stroke (look for white pixels from mask canvas)
+          // Since we drew with white color, detect white pixels with high alpha
+          final red = pixel.r;
+          final green = pixel.g;  
+          final blue = pixel.b;
           final alpha = pixel.a;
-          // If alpha > threshold, mark as area to remove (white = 255)
-          // Use lower threshold for better detection of drawn strokes
-          if (alpha > 10) { // Very low threshold to catch even light strokes
+          
+          // Detect white drawing strokes (all RGB channels high + high alpha)
+          if (alpha > 100 && red > 200 && green > 200 && blue > 200) {
             binaryMask.setPixelRgb(x, y, 255, 255, 255); // White = remove
             whitePixelCount++;
           }
-          // Black areas (alpha <= 10) remain black = keep (already filled with black)
+          // All other pixels remain black = keep (already filled with black)
         }
       }
+      
+      print('DEBUG: Canvas mask size: ${resizedCanvasMask.width}x${resizedCanvasMask.height}');
+      print('DEBUG: Total pixels checked: ${originalImg.width * originalImg.height}');
+      print('DEBUG: Detected stroke pixels: $whitePixelCount');
 
       // Validate mask quality
       double whitePercentage = (whitePixelCount / totalPixels) * 100;
@@ -146,10 +176,10 @@ class _MaskDrawingScreenState extends State<MaskDrawingScreen> {
       print('White pixels (remove): $whitePixelCount (${whitePercentage.toStringAsFixed(1)}%)');
       print('Black pixels (keep): ${totalPixels - whitePixelCount} (${(100 - whitePercentage).toStringAsFixed(1)}%)');
       
-      // Safety check - if more than 50% is white, something is wrong
-      if (whitePercentage > 50.0) {
+      // Safety check - if more than 80% is white, something is very wrong
+      if (whitePercentage > 80.0) {
         print('WARNING: Mask có thể bị lỗi - quá nhiều vùng được đánh dấu xóa');
-        throw Exception('Mask không hợp lệ: ${whitePercentage.toStringAsFixed(1)}% ảnh sẽ bị xóa. Vui lòng vẽ lại chính xác hơn.');
+        throw Exception('Mask không hợp lệ: ${whitePercentage.toStringAsFixed(1)}% ảnh sẽ bị xóa. Vui lòng vẽ lại ít hơn.');
       }
       
       if (whitePixelCount == 0) {
