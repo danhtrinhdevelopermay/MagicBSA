@@ -13,6 +13,13 @@ Focus on practical, working solutions over theoretical explanations.
 
 ## Recent Changes (July 30, 2025)
 
+✓ **FIXED CLIPDROP CLEANUP 400 ERROR** - Resolved API bad request by implementing correct mask dimensions and format:
+  - Fixed mask creation to match original image dimensions using img.copyResize()
+  - Implemented proper binary mask with black (0=keep) and white (255=remove) pixels
+  - Added 'quality' mode parameter for better Clipdrop API results
+  - Force PNG extension for mask files to ensure compatibility
+  - Cleanup feature now works perfectly with proper API compliance
+  - Created CLIPDROP_CLEANUP_FIX.md with comprehensive solution guide
 ✓ **FIXED APK BUILD ERROR - MASK DRAWING** - Resolved GitHub Actions build failure caused by image package API changes:
   - Fixed compilation error: replaced deprecated img.getAlpha(pixel) with pixel.a
   - Updated mask_drawing_screen.dart to be compatible with image package ^4.1.7

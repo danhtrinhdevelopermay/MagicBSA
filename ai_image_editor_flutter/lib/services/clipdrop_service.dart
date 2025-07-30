@@ -183,9 +183,11 @@ class ClipDropService {
               'mask_file',
               await MultipartFile.fromFile(
                 maskFile.path,
-                filename: 'mask.${maskFile.path.split('.').last}',
+                filename: 'mask.png', // Force PNG extension for mask
               ),
             ));
+            // Add mode parameter for better quality
+            formData.fields.add(MapEntry('mode', 'quality'));
           }
           break;
         

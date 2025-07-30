@@ -76,45 +76,64 @@ class _MaskDrawingScreenState extends State<MaskDrawingScreen> {
 
   Future<void> _createMask() async {
     try {
+      // Get original image dimensions first
+      final originalImageBytes = await widget.originalImage.readAsBytes();
+      final img.Image? originalImg = img.decodeImage(originalImageBytes);
+      if (originalImg == null) {
+        throw Exception('Không thể đọc ảnh gốc');
+      }
+
       // Get canvas render boundary
       final RenderRepaintBoundary boundary = 
           _canvasKey.currentContext!.findRenderObject() as RenderRepaintBoundary;
       
       // Capture the canvas as image
-      final ui.Image image = await boundary.toImage(pixelRatio: 1.0);
-      final ByteData? byteData = await image.toByteData(format: ui.ImageByteFormat.png);
+      final ui.Image canvasImage = await boundary.toImage(pixelRatio: 1.0);
+      final ByteData? byteData = await canvasImage.toByteData(format: ui.ImageByteFormat.png);
       
       if (byteData == null) {
-        throw Exception('Không thể tạo mask');
+        throw Exception('Không thể tạo mask từ canvas');
       }
 
-      // Convert to mask format (black and white only)
+      // Convert canvas to mask format
       final Uint8List pngBytes = byteData.buffer.asUint8List();
-      final img.Image? maskImage = img.decodePng(pngBytes);
+      final img.Image? canvasMask = img.decodePng(pngBytes);
       
-      if (maskImage == null) {
-        throw Exception('Không thể decode mask image');
+      if (canvasMask == null) {
+        throw Exception('Không thể decode canvas mask');
       }
 
-      // Convert to binary mask (0 = keep, 255 = remove)
-      final img.Image binaryMask = img.Image(
-        width: maskImage.width,
-        height: maskImage.height,
-        numChannels: 1,
+      // Resize canvas mask to match original image dimensions
+      final img.Image resizedCanvasMask = img.copyResize(
+        canvasMask,
+        width: originalImg.width,
+        height: originalImg.height,
+        interpolation: img.Interpolation.nearest,
       );
 
-      for (int y = 0; y < maskImage.height; y++) {
-        for (int x = 0; x < maskImage.width; x++) {
-          final pixel = maskImage.getPixel(x, y);
-          // If pixel is not transparent (alpha > 0), mark as remove (255)
-          // Otherwise mark as keep (0)
+      // Create binary mask with same dimensions as original image
+      final img.Image binaryMask = img.Image(
+        width: originalImg.width,
+        height: originalImg.height,
+        numChannels: 3, // RGB format for better compatibility
+      );
+
+      // Fill with black background (0 = keep as per Clipdrop API)
+      img.fill(binaryMask, color: img.ColorRgb8(0, 0, 0));
+
+      // Convert drawn areas to white (255 = remove as per Clipdrop API)
+      for (int y = 0; y < originalImg.height; y++) {
+        for (int x = 0; x < originalImg.width; x++) {
+          final pixel = resizedCanvasMask.getPixel(x, y);
           final alpha = pixel.a;
-          final maskValue = alpha > 128 ? 255 : 0;
-          binaryMask.setPixelRgba(x, y, maskValue, maskValue, maskValue, 255);
+          // If alpha > threshold, mark as area to remove (white = 255)
+          if (alpha > 64) { // Lower threshold for better detection
+            binaryMask.setPixelRgb(x, y, 255, 255, 255);
+          }
         }
       }
 
-      // Save mask file
+      // Save mask file as PNG
       final directory = await getTemporaryDirectory();
       final maskFile = File('${directory.path}/cleanup_mask_${DateTime.now().millisecondsSinceEpoch}.png');
       await maskFile.writeAsBytes(img.encodePng(binaryMask));
