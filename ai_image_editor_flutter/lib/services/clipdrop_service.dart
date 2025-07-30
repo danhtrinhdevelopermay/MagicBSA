@@ -238,6 +238,11 @@ class ClipDropService {
           break;
       }
 
+      print('Calling Clipdrop API: $apiUrl');
+      print('API Key: ${_currentApiKey.substring(0, 8)}...');
+      print('Form data fields: ${formData.fields.map((e) => '${e.key}=${e.value}').join(', ')}');
+      print('Form data files: ${formData.files.map((e) => e.key).join(', ')}');
+
       final response = await _dio.post(
         apiUrl,
         data: formData,
@@ -246,10 +251,15 @@ class ClipDropService {
         ),
       );
 
+      print('API Response status: ${response.statusCode}');
+      print('Response headers: ${response.headers}');
+      
       if (response.statusCode == 200) {
+        print('API call successful, image data size: ${response.data.length} bytes');
         return Uint8List.fromList(response.data);
       } else {
-        throw Exception('API error: ${response.statusCode}');
+        print('API error response: ${response.data}');
+        throw Exception('API error: ${response.statusCode} - ${response.statusMessage}');
       }
     });
   }

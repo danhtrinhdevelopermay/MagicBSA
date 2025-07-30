@@ -115,11 +115,15 @@ class _MaskDrawingScreenState extends State<MaskDrawingScreen> {
       final img.Image binaryMask = img.Image(
         width: originalImg.width,
         height: originalImg.height,
-        numChannels: 3, // RGB format for better compatibility
+        numChannels: 1, // Grayscale for better performance and compatibility
       );
 
       // Fill with black background (0 = keep as per Clipdrop API)
-      img.fill(binaryMask, color: img.ColorRgb8(0, 0, 0));
+      img.fill(binaryMask, color: img.ColorUint8.gray(0));
+
+      // Count pixels to validate mask
+      int whitePixelCount = 0;
+      int totalPixels = originalImg.width * originalImg.height;
 
       // Convert drawn areas to white (255 = remove as per Clipdrop API)
       for (int y = 0; y < originalImg.height; y++) {
@@ -128,20 +132,46 @@ class _MaskDrawingScreenState extends State<MaskDrawingScreen> {
           final alpha = pixel.a;
           // If alpha > threshold, mark as area to remove (white = 255)
           // Use lower threshold for better detection of drawn strokes
-          if (alpha > 32) { // Lower threshold for better stroke detection
-            binaryMask.setPixelRgb(x, y, 255, 255, 255); // White = remove
+          if (alpha > 10) { // Very low threshold to catch even light strokes
+            binaryMask.setPixelGray(x, y, 255); // White = remove
+            whitePixelCount++;
           }
-          // Black areas (alpha <= 32) remain black = keep (already filled with black)
+          // Black areas (alpha <= 10) remain black = keep (already filled with black)
         }
       }
 
+      // Validate mask quality
+      double whitePercentage = (whitePixelCount / totalPixels) * 100;
       print('Mask created: ${originalImg.width}x${originalImg.height} pixels');
-      print('Binary mask: black (0) = keep, white (255) = remove');
+      print('White pixels (remove): $whitePixelCount (${whitePercentage.toStringAsFixed(1)}%)');
+      print('Black pixels (keep): ${totalPixels - whitePixelCount} (${(100 - whitePercentage).toStringAsFixed(1)}%)');
+      
+      // Safety check - if more than 50% is white, something is wrong
+      if (whitePercentage > 50.0) {
+        print('WARNING: Mask có thể bị lỗi - quá nhiều vùng được đánh dấu xóa');
+        throw Exception('Mask không hợp lệ: ${whitePercentage.toStringAsFixed(1)}% ảnh sẽ bị xóa. Vui lòng vẽ lại chính xác hơn.');
+      }
+      
+      if (whitePixelCount == 0) {
+        throw Exception('Không phát hiện vùng vẽ. Vui lòng vẽ trên những vùng cần xóa.');
+      }
 
       // Save mask file as PNG
       final directory = await getTemporaryDirectory();
       final maskFile = File('${directory.path}/cleanup_mask_${DateTime.now().millisecondsSinceEpoch}.png');
-      await maskFile.writeAsBytes(img.encodePng(binaryMask));
+      final pngBytes = img.encodePng(binaryMask);
+      await maskFile.writeAsBytes(pngBytes);
+
+      print('Mask file saved: ${maskFile.path}');
+      print('Mask file size: ${pngBytes.length} bytes');
+      
+      // Validate saved mask file
+      final savedMask = img.decodePng(pngBytes);
+      if (savedMask == null) {
+        throw Exception('Lỗi: Không thể tạo file mask PNG hợp lệ');
+      }
+      
+      print('Mask validation successful: ${savedMask.width}x${savedMask.height}');
 
       // Return the mask file
       widget.onMaskCreated(maskFile);
