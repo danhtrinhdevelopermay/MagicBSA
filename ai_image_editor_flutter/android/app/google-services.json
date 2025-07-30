@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "290380851437",
+    "project_id": "twink-ai",
+    "storage_bucket": "twink-ai.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:290380851437:android:127eaa548ce2df38ca44e4",
+        "android_client_info": {
+          "package_name": "com.example.ai_image_editor_flutter"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB80wfEHyjHpvjyMyDjqnarxAwk_3bb83A"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
