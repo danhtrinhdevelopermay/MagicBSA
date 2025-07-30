@@ -36,12 +36,12 @@ Focus on practical, working solutions over theoretical explanations.
   - Removed XML gradient dependencies that caused resource compilation errors
   - Adaptive icon now uses PNG foreground instead of vector drawable
   - APK build should now pass GitHub Actions without XML parsing errors
-✓ **UPDATED LAUNCHER ICON WITH OPTIMIZED LOGO** - Applied user's optimized TwinkBSA logo:
-  - Replaced all Android launcher icon sizes (48x48 to 192x192) with new optimized PNG logo
-  - Used better-sized logo to prevent zoom issues and visual clipping on launcher
-  - Created ic_launcher_foreground.png files in all density folders with proper scaling
-  - Updated app_icon.png in assets with new logo for consistent branding throughout app
-  - Launcher icon now displays perfectly without being cropped or zoomed inappropriately
+✓ **FIXED LAUNCHER ICON ZOOM ISSUE** - Resolved launcher icon appearing too large/zoomed:
+  - Reduced logo size to 70% to prevent excessive zoom and quality loss on launcher
+  - Applied size reduction to all Android launcher icon densities (mdpi to xxxhdpi)
+  - Updated adaptive icon foreground with proper scaling to maintain crisp quality
+  - Logo now displays at appropriate size without being stretched or pixelated
+  - Preserved original image quality by avoiding aggressive resizing
 
 ✓ **FIXED APK BUILD ERROR** - Resolved GitHub Actions APK build failure caused by XML namespace issue:
   - Fixed ic_launcher_foreground.xml with missing aapt namespace declaration
