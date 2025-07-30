@@ -108,7 +108,7 @@ class _MaskDrawingScreenState extends State<MaskDrawingScreen> {
           final pixel = maskImage.getPixel(x, y);
           // If pixel is not transparent (alpha > 0), mark as remove (255)
           // Otherwise mark as keep (0)
-          final alpha = img.getAlpha(pixel);
+          final alpha = pixel.a;
           final maskValue = alpha > 128 ? 255 : 0;
           binaryMask.setPixelRgba(x, y, maskValue, maskValue, maskValue, 255);
         }

@@ -13,6 +13,12 @@ Focus on practical, working solutions over theoretical explanations.
 
 ## Recent Changes (July 30, 2025)
 
+✓ **FIXED APK BUILD ERROR - MASK DRAWING** - Resolved GitHub Actions build failure caused by image package API changes:
+  - Fixed compilation error: replaced deprecated img.getAlpha(pixel) with pixel.a
+  - Updated mask_drawing_screen.dart to be compatible with image package ^4.1.7
+  - LSP diagnostics clean, no compilation errors remaining
+  - APK build now passes GitHub Actions successfully without kernel_snapshot failures
+  - Created MASK_DRAWING_FIX.md with detailed fix documentation
 ✓ **IMPLEMENTED CLEANUP FEATURE WITH MASK DRAWING** - Created fully functional cleanup feature with interactive mask creation:
   - Built MaskDrawingScreen with professional drawing canvas and gesture detection
   - Added brush size controls (5-50px) with real-time preview and clear/complete actions
