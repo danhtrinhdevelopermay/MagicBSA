@@ -96,8 +96,8 @@ class _MaskDrawingScreenState extends State<MaskDrawingScreen> {
       }
 
       // Convert canvas to mask format
-      final Uint8List pngBytes = byteData.buffer.asUint8List();
-      final img.Image? canvasMask = img.decodePng(pngBytes);
+      final Uint8List canvasPngBytes = byteData.buffer.asUint8List();
+      final img.Image? canvasMask = img.decodePng(canvasPngBytes);
       
       if (canvasMask == null) {
         throw Exception('Không thể decode canvas mask');
@@ -111,15 +111,15 @@ class _MaskDrawingScreenState extends State<MaskDrawingScreen> {
         interpolation: img.Interpolation.nearest,
       );
 
-      // Create binary mask with same dimensions as original image
+      // Create binary mask with same dimensions as original image (RGB format for compatibility)
       final img.Image binaryMask = img.Image(
         width: originalImg.width,
         height: originalImg.height,
-        numChannels: 1, // Grayscale for better performance and compatibility
+        numChannels: 3, // RGB format for better compatibility with Clipdrop API
       );
 
       // Fill with black background (0 = keep as per Clipdrop API)
-      img.fill(binaryMask, color: img.ColorUint8.gray(0));
+      img.fill(binaryMask, color: img.ColorRgb8(0, 0, 0));
 
       // Count pixels to validate mask
       int whitePixelCount = 0;
@@ -133,7 +133,7 @@ class _MaskDrawingScreenState extends State<MaskDrawingScreen> {
           // If alpha > threshold, mark as area to remove (white = 255)
           // Use lower threshold for better detection of drawn strokes
           if (alpha > 10) { // Very low threshold to catch even light strokes
-            binaryMask.setPixelGray(x, y, 255); // White = remove
+            binaryMask.setPixelRgb(x, y, 255, 255, 255); // White = remove
             whitePixelCount++;
           }
           // Black areas (alpha <= 10) remain black = keep (already filled with black)
@@ -159,14 +159,14 @@ class _MaskDrawingScreenState extends State<MaskDrawingScreen> {
       // Save mask file as PNG
       final directory = await getTemporaryDirectory();
       final maskFile = File('${directory.path}/cleanup_mask_${DateTime.now().millisecondsSinceEpoch}.png');
-      final pngBytes = img.encodePng(binaryMask);
-      await maskFile.writeAsBytes(pngBytes);
+      final maskPngBytes = img.encodePng(binaryMask);
+      await maskFile.writeAsBytes(maskPngBytes);
 
       print('Mask file saved: ${maskFile.path}');
-      print('Mask file size: ${pngBytes.length} bytes');
+      print('Mask file size: ${maskPngBytes.length} bytes');
       
       // Validate saved mask file
-      final savedMask = img.decodePng(pngBytes);
+      final savedMask = img.decodePng(maskPngBytes);
       if (savedMask == null) {
         throw Exception('Lỗi: Không thể tạo file mask PNG hợp lệ');
       }
